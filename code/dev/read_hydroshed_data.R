@@ -6,13 +6,11 @@ library(raster)
 library(data.table)
 
 # define files
-data_loc <- "data/HydroSHED/"
-product <- "DEM_30s_GRID/"
-region <- "eu_dem_30s_grid/eu_dem_30s/"
-where <- "eu_dem_30s/"
+data_loc <- "./data/raw/hydrosheds/hydrosheds_dem/"
+product <- "dem_15s_grid/"
+region <- "eu_dem_15s/"
 
-
-filename <- paste0(data_loc,product,region, where, "w001001.adf")
+filename <- paste0(data_loc, product, region,  "w001001.adf")
 test_raster <- raster(filename)
 plot(test_raster)
 
