@@ -1,9 +1,8 @@
 ## Read hydroshed DEM data
 # downloaded from https://www.dropbox.com/sh/hmpwobbz9qixxpe/AAAI_jasMJPZl_6wX6d3vEOla?dl=0
 
-# libraries needed
+source('./source/libs.R')
 library(raster)
-library(data.table)
 
 # define files
 data_loc <- "./data/raw/hydrosheds/hydrosheds_dem/"
