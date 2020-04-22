@@ -13,7 +13,7 @@ very_straight_river <- data.frame(lon = c(-1, 0, 1, 2, 3, 4, 5, 6, 7, 7, 8, 9, 1
 horse_shoe_river <- data.frame(lon = c(3, 2, 1, 2, 3, 4, 5, 6, 6, 5, 4, 3, 2, 2, 1, 0),
                             lat = c(5, 4, 3, 3, 2, 2, 2, 1, 0, 0, 1, 1, 0, 0, 1, 0))
 
-#type 3 are the meanders
+#type 3 are the rivers with meanders
 snake_river <- data.frame(lon = c(3, 2, 1, 2, 3, 4, 5, 6, 6, 5, 4, 3, 2, 2, 1, 0),
                           lat = c(5, 4, 3, 3, 2, 2, 2, 1, 0, 0, 1, 1, 0, 0, 1, 0))
 
