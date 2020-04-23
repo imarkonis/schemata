@@ -3,7 +3,7 @@
 
 library(sf)
 
-data_loc <- "./data/HydroSHED/"
+data_loc <- "./data/raw/hydrosheds/"
 product <- "HydroSHEDS_RIV/"
 resolution <- "RIV_30s/"
 region <- "eu_riv_30s/"
