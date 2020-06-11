@@ -7,14 +7,14 @@ data_loc <- "./data/raw/hydrosheds/"
 product <- "hydrobasins/standard/"
 region <- "eu/"
 where <- "hybas_eu_lev01-12_v1c/"
-filename <- paste0(data_loc, product, region, where, "hybas_eu_lev04_v1c.shp")
+filename <- paste0(data_loc, product, region, where, "hybas_eu_lev08_v1c.shp")
 test_shape <- st_read(filename)
 
 # plot test_shape
 plot(st_geometry(test_shape), col = sf.colors(12, categorical = TRUE), border = NA, 
      axes = TRUE)
 
-single_shape_id <- as.character(test_shape$HYBAS_ID[1])
+single_shape_id <- as.character(test_shape$HYBAS_ID[12])
 plot(st_geometry(test_shape[test_shape$HYBAS_ID == single_shape_id, ]), 
      col = sf.colors(12, categorical = TRUE), border = NA, 
      axes = TRUE)
