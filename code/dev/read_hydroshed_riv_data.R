@@ -22,4 +22,4 @@ box = c(xmin = 20, ymin = 40, xmax = 25, ymax = 36)
 pilot_area <- st_crop(eu_rivers$geometry, box) 
 plot(pilot_area)
 
-mls <- st_cast(pilot_area, "MULTILINESTRING")
+
