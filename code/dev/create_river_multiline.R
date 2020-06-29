@@ -16,9 +16,14 @@ plot(river_multi,
      lwd = 0.5, axes = T)
 dev.off()
 
-one_river <- river_multi[3]
-plot(one_river, 
-     lwd = 0.5, axes = T)
+names(river_multi) <- sort(unique(river_pilot$BAS_ID))
+
+one_river <- river_multi[1]
+plot(river_pilot[river_pilot$BAS_ID == 2500285, 1],  
+     col = 'black', main = NULL)
+plot(one_river, lwd = 0.5, axes = T)
+
+
 
 river_lengths <- vector()
 for(i in 1:length(river_multi)) {
