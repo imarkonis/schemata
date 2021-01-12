@@ -1,4 +1,3 @@
-
 library(ggplot2)
 library(data.table)
 library(sf)
@@ -25,4 +24,4 @@ plot_BAS_IDs <- function(BAS_IDs, shape_file){
 #Example 
 shape_file <- "river_pilot.shp"
 BAS_IDs <- c(2583824, 2558949)
-pBI <- plot_BAS_IDs(BAS_IDs = BAS_IDs)
+pBI <- plot_BAS_IDs(BAS_IDs = BAS_IDs, shape_file)
