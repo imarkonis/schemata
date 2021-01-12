@@ -26,11 +26,10 @@ test_dem <- raster(filename)
 
 circ_rat <- function(shape, dem, area_thresh_unit = 0.5, z_step = 0.05){
   shape_extent <- extent(shape)
-  crop_dem <- crop(test_dem, shape_extent)
+  crop_dem <- crop(dem, shape_extent)
   mask_dem <- mask(crop_dem, shape)
   dem_to_grid <- as(mask_dem, 'SpatialGridDataFrame')
   dem_to_grid@data$COUNT <- mask_dem@data@values
-  
   
   r <- mask_dem > -Inf
   
@@ -40,7 +39,6 @@ circ_rat <- function(shape, dem, area_thresh_unit = 0.5, z_step = 0.05){
   mask_dem_norm@data@values <- (mask_dem@data@values-min_eval)/(max_eval-min_eval)
   
   el_zones <- seq(z_step, 1, z_step)
-  
   C_data <- data.table(Z = el_zones, Circ = 0)
   
   for(z in el_zones){
