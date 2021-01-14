@@ -1,12 +1,12 @@
 # hydrological functions that can be applied in hydrosheds
+library(data.table)
 library(raster)
 library(sf)
 library(OasisR)
 library(lwgeom)
 library(smoothr)
-library(data.table)
 
-
+source('code/source/geo_utils.R')
 data_loc <- "data/raw/hydrosheds/"
 product <- "hydrobasins/standard/"
 region <- "eu/"
@@ -24,26 +24,13 @@ region <- "eu_dem_15s/"
 filename <- paste0(data_loc,product, region, "w0010001.adf")
 test_dem <- raster(filename)
 
-circ_rat <- function(shape, dem, area_thresh_unit = 0.5, z_step = 0.05){
-  shape_extent <- extent(shape)
-  crop_dem <- crop(dem, shape_extent)
-  mask_dem <- mask(crop_dem, shape)
-  dem_to_grid <- as(mask_dem, 'SpatialGridDataFrame')
-  dem_to_grid@data$COUNT <- mask_dem@data@values
-  
-  r <- mask_dem > -Inf
-  
-  min_eval <- min(mask_dem@data@values, na.rm = T)
-  max_eval <- max(mask_dem@data@values, na.rm = T)
-  mask_dem_norm <- mask_dem
-  mask_dem_norm@data@values <- (mask_dem@data@values-min_eval)/(max_eval-min_eval)
-  
+circ_rat <- function(basin, area_thresh_unit = 0.5, z_step = 0.05){
   el_zones <- seq(z_step, 1, z_step)
   C_data <- data.table(Z = el_zones, Circ = 0)
   
   for(z in el_zones){
-    print(paste('elevation zone',z))
-    tmp <- mask_dem_norm
+    print(paste('elevation zone', z))
+    tmp <- basin
     tmp@data@values[tmp@data@values > z] <- NA
     r <- tmp > -Inf
     dem_to_shape <- rasterToPolygons(r, dissolve = T)
@@ -51,13 +38,13 @@ circ_rat <- function(shape, dem, area_thresh_unit = 0.5, z_step = 0.05){
     dem_to_shape_dropped <- drop_crumbs(dem_to_shape, area_thresh)
     dem_to_shape_filled <- fill_holes(dem_to_shape_dropped, area_thresh*3)
     dem_to_shape_sm <- smooth(dem_to_shape_filled, method = "ksmooth", smoothness = 1.5)
-    perimeter_dem_sm <- perimeter(dem_to_shape_sm)
-    area_dem_sm <- area(dem_to_shape_sm)
-    C_dem_sm <- 4*pi*area_dem_sm/perimeter_dem_sm/perimeter_dem_sm
-    C_data[Z == z, Circ := C_dem_sm,]
+    C_data[Z == z, Circ := circ_ratio(dem_to_shape_sm),]
   }
   return(C_data)
 }
 
-circ_ratio <- circ_rat(shape, test_dem, 0.5, 0.05)
+basin <- crop_basin(shape, test_dem, standardize = T)
+circ_ratio_test <- circ_rat(basin, 0.5, 0.05)
+
+circ_ratio_basin <- circ_ratio(as_Spatial(shape))
 
