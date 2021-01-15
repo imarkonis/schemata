@@ -47,4 +47,3 @@ basin <- crop_basin(shape, test_dem, standardize = T)
 circ_ratio_test <- circ_rat(basin, 0.5, 0.05)
 
 circ_ratio_basin <- circ_ratio(as_Spatial(shape))
-

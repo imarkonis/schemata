@@ -1,0 +1,2 @@
+BASIN_MIN <- 100
+BASIN_MAX <- 200

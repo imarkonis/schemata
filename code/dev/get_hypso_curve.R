@@ -23,4 +23,3 @@ filename <- paste0(data_loc,product, region, "w0010001.adf")
 test_dem <- raster(filename)
 cropped_basin_dem <- crop_basin(shape, test_dem, asSpatialGridDataFrame = T)
 hyps_rel <- hypso_rel(cropped_basin_dem)
-
