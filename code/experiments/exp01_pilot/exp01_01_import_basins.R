@@ -32,4 +32,14 @@ hist(basins_sf$SUB_AREA, breaks = 100)
 plot(st_geometry(basins_sf), col = sf.colors(12, categorical = TRUE), 
      border = NA, axes = TRUE)
 
+### Better crop idea: still not working!
 
+cropper <- st_polygon(list(matrix(c(LON_MIN, LAT_MIN), ncol = 2), 
+                           matrix(c(LON_MIN, LAT_MAX), ncol = 2), 
+                           matrix(c(LON_MAX, LAT_MAX), ncol = 2), 
+                           matrix(c(LON_MAX, LAT_MIN), ncol = 2),
+                           matrix(c(LON_MIN, LAT_MIN), ncol = 2)))
+cropper <- st_sfc(cropper)
+st_crs(cropper) =  4326
+cropper = st_sf(data.frame(a = 1, geom = sfc))
+test <- st_intersection(basins_sf, cropper)
