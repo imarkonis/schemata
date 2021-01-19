@@ -1,12 +1,12 @@
 #Import and preprocess dem
 library(raster)
 source('code/source/libs.R')
-source('code/source/pilot.R')
+source('code/source/pilot_b.R')
 
 data_loc <- "./data/raw/hydrosheds/"
 product <- "hydrosheds_dem/dem_15s_grid/"
 region <- "eu_dem_15s/"
-rasterfile_dem <- paste0(data_loc_basins, product, region, "w001001.adf")
+rasterfile_dem <- paste0(data_loc, product, region, "w001001.adf")
 
 dem_raster_raw <- raster(rasterfile_dem)
 

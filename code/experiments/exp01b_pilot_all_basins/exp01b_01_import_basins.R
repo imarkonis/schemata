@@ -1,28 +1,26 @@
 #Import and preprocess basin data
 
 source('code/source/libs.R')
-source('code/source/pilot.R')
+source('code/source/pilot_b.R')
 source('code/source/graphics.R')
 
 data_loc <- "./data/raw/hydrosheds/"
 product <- "hydrobasins/standard/"
 region <- "eu/"
 where <- "hybas_eu_lev01-12_v1c/"
-shapefile_basins <- paste0(data_loc, product, region, where, "hybas_eu_lev10_v1c.shp")
+shapefile_basins <- paste0(data_loc, product, region, where, "hybas_eu_lev06_v1c.shp")
 
 basins_sf_raw <- st_read(shapefile_basins)
-basins_sf <- basins_sf_raw[basins_sf_raw$SUB_AREA > AREA_MIN & 
-                             basins_sf_raw$SUB_AREA < AREA_MAX,]
 
-basins_sf <- st_buffer(basins_sf, dist = 0)
-basins_sf <- st_crop(basins_sf, c(xmin = LON_MIN, 
+basins_sf <- st_crop(basins_sf_raw, c(xmin = LON_MIN, 
                                   ymin = LAT_MIN, 
                                   xmax = LON_MAX, 
                                   ymax = LAT_MAX))
+
 basins_ids <- basins_sf$HYBAS_ID
 basins_sf <- basins_sf_raw[basins_sf_raw$HYBAS_ID %in% basins_ids, ]
 
-st_write(basins_sf, paste0("./data/experiments/", experiment, "basins_pilot.shp"))
+st_write(basins_sf, paste0("./data/experiments/", experiment, "/basins_pilot.shp"))
 
 
 ## Validation plots
