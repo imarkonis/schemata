@@ -1,5 +1,5 @@
 #Merge basins, rivers and DEMs
-library(raster)
+
 source('code/source/pilot.R')
 source('code/source/libs.R')
 source('code/source/geo_utils.R')
