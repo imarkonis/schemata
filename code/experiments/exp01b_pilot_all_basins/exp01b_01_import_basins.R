@@ -8,14 +8,16 @@ data_loc <- "./data/raw/hydrosheds/"
 product <- "hydrobasins/standard/"
 region <- "eu/"
 where <- "hybas_eu_lev01-12_v1c/"
-shapefile_basins <- paste0(data_loc, product, region, where, "hybas_eu_lev06_v1c.shp")
+shapefile_basins <- paste0(data_loc, product, region, where, "hybas_eu_lev07_v1c.shp")
 
 basins_sf_raw <- st_read(shapefile_basins)
 
-basins_sf <- st_crop(basins_sf_raw, c(xmin = LON_MIN, 
-                                  ymin = LAT_MIN, 
-                                  xmax = LON_MAX, 
-                                  ymax = LAT_MAX))
+basins_sf <- st_buffer(basins_sf_raw, dist = 0)
+
+basins_sf <- st_crop(basins_sf_raw, c(xmin = LON_MIN+1, 
+                                  ymin = LAT_MIN+1, 
+                                  xmax = LON_MAX+1, 
+                                  ymax = LAT_MAX+1))
 
 basins_ids <- basins_sf$HYBAS_ID
 basins_sf <- basins_sf_raw[basins_sf_raw$HYBAS_ID %in% basins_ids, ]
