@@ -22,7 +22,7 @@ basins_sf <- st_crop(basins_sf, c(xmin = LON_MIN,
 basins_ids <- basins_sf$HYBAS_ID
 basins_sf <- basins_sf_raw[basins_sf_raw$HYBAS_ID %in% basins_ids, ]
 
-st_write(basins_sf, paste0("./data/experiments/", experiment, "basins_pilot.shp"))
+st_write(basins_sf, paste0("./data/experiments/", experiment, "/basins_pilot.shp"))
 
 
 ## Validation plots
