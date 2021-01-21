@@ -14,8 +14,7 @@ basins_sf_raw <- st_read(shapefile_basins)
 basins_sf <- basins_sf_raw[basins_sf_raw$SUB_AREA > AREA_MIN & 
                              basins_sf_raw$SUB_AREA < AREA_MAX,]
 
-basins_sf <- st_buffer(basins_sf, dist = 0)
-basins_sf <- st_crop(basins_sf, c(xmin = LON_MIN, 
+basins_sf <- st_crop(st_make_valid(basins_sf), c(xmin = LON_MIN, 
                                   ymin = LAT_MIN, 
                                   xmax = LON_MAX, 
                                   ymax = LAT_MAX))
