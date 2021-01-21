@@ -5,7 +5,7 @@ source('code/source/libs.R')
 source('code/source/pilot.R')
 source('code/source/graphics.R')
 
-data_loc <- paste0("./data/experiments/", experiment)
+data_loc <- paste0("./data/experiments/", experiment, '/')
 
 ee_Initialize(drive = T)
 data_gee_id <- "WWF/HydroSHEDS/v1/FreeFlowingRivers"
