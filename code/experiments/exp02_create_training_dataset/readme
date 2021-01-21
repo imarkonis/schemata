@@ -1,0 +1,9 @@
+Creates training dataset from Earth data for supervised classification
+
+Workflow:
+
+1. Set region coordinates and drainage basin size in pilot.R
+
+2. Import/download geodata (exp02_01 files).
+
+3. Merge geodata 
