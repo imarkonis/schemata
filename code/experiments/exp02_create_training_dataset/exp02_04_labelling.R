@@ -5,6 +5,7 @@ source('code/source/libs.R')
 source('code/source/geo_utils.R')
 library(stars)
 
+dir.create(paste0("./data/experiments/", experiment, '/training'))
 shapefile_rivers <- paste0("./data/experiments/", experiment, "/rivers.shp")
 rasterfile_dem <- paste0("./data/experiments/", experiment, "/dem.tif")
 
@@ -33,14 +34,15 @@ for(lon_count in 1:(length(lon_cuts) - 1)){
     
     pal <- colorRampPalette(rep("black", 2))
     rivers_raster <- st_rasterize(rivers_subset[, "CONTINENT"])
+    png(paste0("./data/experiments/", experiment, '/training/',
+               lon_cuts[lon_count], "_", lat_cuts[lat_count], "_rivers.png"))
     plot(rivers_raster, main = NULL, key.pos = NULL, col = pal(2))
-    tiff(paste0("./data/experiments/", experiment, "/training/rivers_", 
-                lon_count, "_", lat_count, ".tiff"))
     dev.off()
     pal <- colorRampPalette(c("black", "white"))
+    png(paste0("./data/experiments/", experiment, '/training/',
+               lon_cuts[lon_count], "_", lat_cuts[lat_count], "_dem.png"))
     plot(dem_raster_subset, col = pal(100),  legend = FALSE, axes=FALSE, box = FALSE)
-    tiff(paste0("./data/experiments/", experiment, "/training/dem_", 
-                lon_count, "_", lat_count, ".tif"))
+
     dev.off()
   }
 }

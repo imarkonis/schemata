@@ -6,4 +6,7 @@ Workflow:
 
 2. Import/download geodata (exp02_01 files).
 
-3. Merge geodata 
+3. Extract single raster
+
+4. Create training dataset by looping step 3.
+
