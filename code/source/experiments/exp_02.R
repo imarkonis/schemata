@@ -11,3 +11,7 @@ LAT_MIN <- 53
 LAT_MAX <- 56 
 
 ###############################################################################################
+
+# Paths
+dir.create(paste0('./results/experiments/', experiment))
+dir.create(paste0('./data/experiments/', experiment))

@@ -6,6 +6,13 @@ neutral_color <- "#D6C6B9"
 colset_3 <- c(earth_color, mars_color, titan_color)
 colset_4 <- c(earth_color, mars_color, titan_color, neutral_color)
 
+colset_mid <- c( "#4D648D", "#337BAE", "#97B8C2",  "#739F3D", "#ACBD78",  
+                 "#F4CC70", "#EBB582",  "#BF9A77",
+                 "#E38B75", "#CE5A57",  "#D24136", "#785A46" )
+colset_mid_qual <- colset_mid[c(11, 2, 4, 6,  1, 8, 10, 5, 7, 3, 9, 12)]
+palette_mid <- colorRampPalette(colset_mid)
+palette_mid_qual <- colorRampPalette(colset_mid_qual)
+
 #Plots river network
 plot_rivers <- function(sf_object){
   IDs <- unique(sf_object$BAS_ID)

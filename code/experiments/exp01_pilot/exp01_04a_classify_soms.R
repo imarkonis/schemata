@@ -22,16 +22,19 @@ path_fname <- paste0(path_results, fname, '.Rdata')
 if(recalculate_map == F & file.exists(fname) == T){
   load(fname)
 } else {
-  m <- supersom(apply(basin_feats[, .(tot_riv_length, gc)], 2, scale), 
+  basin_som <- supersom(apply(basin_feats[, .(tot_riv_length, gc)], 2, scale), 
                 grid = som_grid, 
-                rlen= n_iterations, 
+                rlen = n_iterations, 
                 alpha = 0.05
                 #,dist.fcts = distances
                 #, user.weights = weight_layers
                 #, maxNA.fraction = .5
   )
-  save(m, file = path_fname)
+  save(basin_som, file = path_fname)
 }
+
+
+# Validation plots
 
 plot(m, type = "changes")
 plot(m, type = "counts")
