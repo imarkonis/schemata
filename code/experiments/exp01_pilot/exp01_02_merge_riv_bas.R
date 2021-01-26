@@ -1,8 +1,8 @@
 #Merge basins, rivers and DEMs
 
-source('code/source/pilot.R')
 source('code/source/libs.R')
 source('code/source/geo_utils.R')
+source('code/source/experiments/exp_01.R')
 
 shapefile_rivers <- paste0("./data/experiments/", experiment, "/rivers_pilot.shp")
 shapefile_basins <- paste0("./data/experiments/", experiment, "/basins_pilot.shp")

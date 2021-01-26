@@ -1,7 +1,7 @@
 #Import and preprocess dem
 library(raster)
 source('code/source/libs.R')
-source('code/source/pilot.R')
+source('code/source/experiments/exp_01.R')
 
 data_loc <- "./data/raw/hydrosheds/"
 product <- "hydrosheds_dem/dem_15s_grid/"
