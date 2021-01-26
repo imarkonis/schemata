@@ -2,7 +2,7 @@
 
 library(rgee)
 source('code/source/libs.R')
-source('code/source/exp_02.R')
+source('code/source/experiments/exp_02.R')
 source('code/source/graphics.R')
 
 data_loc <- paste0("./data/experiments/", experiment, '/')

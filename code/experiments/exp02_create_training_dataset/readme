@@ -2,11 +2,9 @@ Creates training dataset from Earth data for supervised classification
 
 Workflow:
 
-1. Set region coordinates and drainage basin size in pilot.R
+1. Set region coordinates in source/experiments/exp_02.R
 
 2. Import/download geodata (exp02_01 files).
 
-3. Extract single raster
-
-4. Create training dataset by looping step 3.
+3. Create training dataset (exp02_02_labelling.R).
 

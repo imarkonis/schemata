@@ -1,7 +1,7 @@
 #Import and preprocess dem
 
 source('code/source/libs.R')
-source('code/source/exp_02.R')
+source('code/source/experiments/exp_02.R')
 
 data_loc <- "./data/raw/hydrosheds/"
 product <- "hydrosheds_dem/dem_15s_grid/"
