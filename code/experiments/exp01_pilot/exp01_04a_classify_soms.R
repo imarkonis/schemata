@@ -8,7 +8,7 @@ path_results <- paste0("./data/experiments/", experiment, "/classify/")
 dir.create(path_results)
 basin_feats <- readRDS(paste0("./data/experiments/", experiment, "/basin_feats.rds"))
 
-map_dimension <- 10
+map_dimension <- 3
 n_iterations <- 10000
 recalculate_map <- T
 cores_n <- 7

@@ -8,7 +8,7 @@ source('code/source/experiments/exp_01.R')
 path_data <- paste0("./data/experiments/", experiment, "/classify/")
 path_results <- paste0("./results/experiments/", experiment, "/")
 basin_feats <- readRDS(paste0("./data/experiments/", experiment, "/basin_feats.rds"))
-som_fname <- 'som_pilot_10_10000.Rdata'
+som_fname <- 'som_pilot_3_10000.Rdata'
 path_fname <- paste0(path_data, som_fname)
 
 load(path_fname)
