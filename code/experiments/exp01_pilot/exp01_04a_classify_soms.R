@@ -11,6 +11,7 @@ basin_feats <- readRDS(paste0("./data/experiments/", experiment, "/basin_feats.r
 map_dimension <- 10
 n_iterations <- 10000
 recalculate_map <- T
+cores_n <- 7
 
 som_grid <- somgrid(xdim = map_dimension, 
                     ydim = map_dimension, 
@@ -25,7 +26,8 @@ if(recalculate_map == F & file.exists(fname) == T){
   basin_som <- supersom(apply(basin_feats[, .(tot_riv_length, gc)], 2, scale), 
                 grid = som_grid, 
                 rlen = n_iterations, 
-                alpha = 0.05
+                alpha = 0.05,
+                cores = cores_n
                 #,dist.fcts = distances
                 #, user.weights = weight_layers
                 #, maxNA.fraction = .5
@@ -36,6 +38,6 @@ if(recalculate_map == F & file.exists(fname) == T){
 
 # Validation plots
 
-plot(m, type = "changes")
-plot(m, type = "counts")
-plot(m, type = "codes")
+plot(basin_som, type = "changes")
+plot(basin_som, type = "counts")
+plot(basin_som, type = "codes")
