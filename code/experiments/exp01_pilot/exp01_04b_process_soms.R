@@ -26,6 +26,8 @@ basin_feats[, n_clusters := .N, by = cluster]
 basins_sf <- st_read(paste0("./data/experiments/", experiment, "/basins_pilot_inter.shp"))
 basins_sf <- merge(basins_sf, basin_feats, by = "HYBAS_ID")
 
+saveRDS(basins_sf, paste0(path_results, 'basin_soms_9_classes.rds'))
+
 ggplot(basins_sf) +
   geom_sf(aes(fill = cluster)) +
   scale_fill_manual(values = palette_mid_qual(groups)) +

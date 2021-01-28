@@ -17,3 +17,9 @@ LAT_MAX <- 55
 # Paths
 dir.create(paste0('./results/experiments/', experiment))
 dir.create(paste0('./data/experiments/', experiment))
+
+###############################################################################################
+
+# Parallel
+cores_n <- detectCores()
+cs <- makeCluster(cores_n - 1)

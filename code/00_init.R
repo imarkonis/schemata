@@ -2,7 +2,8 @@
 
 options(repos='http://cran.rstudio.org')
 have_packages <- installed.packages()
-cran_packages <- c('remotes', 'kohonen', 'randomForest','tree')
+cran_packages <- c('remotes', 'kohonen', 'randomForest', 'tree', 
+                   'parallelSVM', 'foreach', 'parallel')
 to_install <- setdiff(cran_packages, have_packages[, 1])
 if(length(to_install)>0) install.packages(to_install)
 
