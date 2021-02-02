@@ -2,7 +2,7 @@
 
 options(repos='http://cran.rstudio.org')
 have_packages <- installed.packages()
-cran_packages <- c('remotes', 'kohonen', 'randomForest', 'tree', 
+cran_packages <- c('remotes', 'kohonen', 'randomForest', 'tree', 'rpostgis'
                    'parallelSVM', 'foreach', 'parallel', 'spatialEco')
 to_install <- setdiff(cran_packages, have_packages[, 1])
 if(length(to_install)>0) install.packages(to_install)
@@ -23,6 +23,8 @@ dir.create('./results/figures')
 dir.create('./results/figures/archive') #figures not used in papers/presentations
 dir.create('./docs')
 dir.create('./docs/literature')
+
+
 
 
 
