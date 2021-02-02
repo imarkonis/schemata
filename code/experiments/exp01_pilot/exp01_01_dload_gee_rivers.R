@@ -11,7 +11,7 @@ ee_Initialize(drive = T)
 data_gee_id <- "WWF/HydroSHEDS/v1/FreeFlowingRivers"
 filename_local <- 'rivers_pilot'
 
-filter_box <- ee$Geometry$Rectangle(LON_MIN, LAT_MIN, LON_MAX, LAT_MAX)
+filter_box <- ee$Geometry$Rectangle(LON_MIN - 1, LAT_MIN - 1, LON_MAX + 1, LAT_MAX + 1)
 rivers <- ee$FeatureCollection(data_gee_id)$filterBounds(filter_box)
 
 rivers_subset <- ee_table_to_drive(

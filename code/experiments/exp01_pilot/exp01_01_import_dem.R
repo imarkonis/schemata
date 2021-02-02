@@ -10,10 +10,10 @@ rasterfile_dem <- paste0(data_loc, product, region, "w001001.adf")
 
 dem_raster_raw <- raster(rasterfile_dem)
 
-e <- extent(LON_MIN, LON_MAX, LAT_MIN, LAT_MAX)
+e <- extent(LON_MIN - 1, LON_MAX + 1, LAT_MIN - 1, LAT_MAX + 1)
 dem_raster <- crop(dem_raster_raw, e)
 
-writeRaster(dem_raster, paste0("./data/experiments/", experiment, "/dem_pilot.tif"))
+writeRaster(dem_raster, paste0("./data/experiments/", experiment, "/dem_pilot.tif"), overwrite = TRUE)
 
 
 #Validation plot

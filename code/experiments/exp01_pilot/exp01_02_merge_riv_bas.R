@@ -1,65 +1,37 @@
 #Merge basins, rivers and DEMs
 
 source('code/source/libs.R')
+source('code/source/functions.R')
 source('code/source/geo_utils.R')
 source('code/source/experiments/exp_01.R')
 
+cores_n <- detectCores()
+cs <- makeCluster(cores_n - 1)
+
 shapefile_rivers <- paste0("./data/experiments/", experiment, "/rivers_pilot.shp")
 shapefile_basins <- paste0("./data/experiments/", experiment, "/basins_pilot.shp")
-rasterfile_dem <- paste0("./data/experiments/", experiment, "/dem_pilot.tif")
+raster_dem <- paste0("./data/experiments/", experiment, "/dem_pilot.tif")
 
 rivers_sf <- st_read(shapefile_rivers)
 basins_sf <- st_read(shapefile_basins)
-dem_raster <- raster(rasterfile_dem)
-riv_bas_sf <- st_intersection(basins_sf, rivers_sf)
+dem_raster <- raster(raster_dem)
 
+riv_bas_sf <- st_intersection(basins_sf[1], rivers_sf)
 riv_bas_ids <- data.table(cbind(HYBAS_ID = riv_bas_sf$HYBAS_ID,
                                 GOID = riv_bas_sf$GOID))
-
-basins_sf_inter <- basins_sf[basins_sf$HYBAS_ID %in% riv_bas_ids$HYBAS_ID, ]
-rivers_sf_inter <- rivers_sf[rivers_sf$GOID %in% riv_bas_ids$GOID, ]
-
 saveRDS(riv_bas_ids, paste0("./data/experiments/", experiment, "/riv_bas_id.rds"))
-st_write(riv_bas_sf, paste0("./data/experiments/", experiment, "/riv_bas_pilot.shp"))
-st_write(basins_sf_inter, paste0("./data/experiments/", experiment, "/basins_pilot_inter.shp"))
-st_write(rivers_sf_inter, paste0("./data/experiments/", experiment, "/rivers_pilot_inter.shp"))
+st_write(riv_bas_sf, paste0("./data/experiments/", experiment, "/riv_bas_pilot.shp"), append = FALSE)
 
-
-#Validation plots
-
-dem_dt <- data.table(rasterToPoints(dem_raster))
-colnames(dem_dt) <- c('lon', 'lat', 'elevation')
-
-ggplot() +
-  geom_raster(data = dem_dt, aes(y = lat, x = lon, fill = elevation)) +
-  geom_sf(data = basins_sf, alpha = 0.1) +
-  geom_sf(data = riv_bas_sf) +
-  labs(x = "", y = "") +
-  theme_light()
+catchments_pilot <- import_hydrosheds_catchments(shapefile_basins, shapefile_rivers, raster_dem)
+names(catchments_pilot) <- basins_sf$HYBAS_ID
+saveRDS(catchments_pilot, paste0("./data/experiments/", experiment, "/catchments.rds"))
 
 hybas_id <- 2101105040 
-single_basin <- basins_sf[basins_sf$HYBAS_ID == hybas_id, ]
-single_river <- riv_bas_sf[riv_bas_sf$HYBAS_ID == hybas_id, ]
-single_dem <- crop_basin(single_basin, dem_raster)
+single_catchment <- new_hydrosheds_catchment(hybas_id, basins_sf, rivers_sf, dem_raster)
+all_catchments <- catchment(basins_sf, rivers_sf, dem_raster)
 
-dem_dt <- data.table(rasterToPoints(single_dem))
-colnames(dem_dt) <- c('lon', 'lat', 'elevation')
-
-ggplot() +
-  geom_raster(data = dem_dt, aes(y = lat, x = lon, fill = elevation)) +
-  geom_sf(data = single_basin, alpha = 0.1) +
-  geom_sf(data = single_river) +
-  labs(x = "", y = "") +
-  theme_light()
-
-single_dem <- crop_basin(basins_sf, dem_raster)
-
-dem_dt <- data.table(rasterToPoints(single_dem))
-colnames(dem_dt) <- c('lon', 'lat', 'elevation')
-
-ggplot() +
-  geom_raster(data = dem_dt, aes(y = lat, x = lon, fill = elevation)) +
-  geom_sf(data = basins_sf, alpha = 0.1) +
-  geom_sf(data = riv_bas_sf) +
-  labs(x = "", y = "") +
-  theme_light()
+#Validation plots
+plot(catchments_pilot[[271]])
+plot(catchments_pilot$`2101105040`)
+plot(single_catchment)
+plot(all_catchment)
