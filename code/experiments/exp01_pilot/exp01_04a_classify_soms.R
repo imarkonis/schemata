@@ -8,10 +8,12 @@ path_results <- paste0("./data/experiments/", experiment, "/classify/")
 dir.create(path_results)
 basin_feats <- readRDS(paste0("./data/experiments/", experiment, "/basin_feats.rds"))
 
+cores_n <- detectCores()
+registerDoParallel(cores = cores_n - 1)
+
 map_dimension <- 3
-n_iterations <- 10000
+n_iterations <- 100000
 recalculate_map <- T
-cores_n <- 7
 
 som_grid <- somgrid(xdim = map_dimension, 
                     ydim = map_dimension, 

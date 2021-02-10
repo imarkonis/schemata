@@ -5,8 +5,8 @@ source('code/source/geo_utils.R')
 source('code/source/geo_functions.R')
 source('code/source/experiments/exp_01.R')
 
-shapefile_rivers <- paste0("./data/experiments/", experiment, "/rivers_pilot_inter.shp")
-shapefile_basins <- paste0("./data/experiments/", experiment, "/basins_pilot_inter.shp")
+shapefile_rivers <- paste0("./data/experiments/", experiment, "/rivers_pilot.shp")
+shapefile_basins <- paste0("./data/experiments/", experiment, "/basins_pilot.shp")
 rasterfile_dem <- paste0("./data/experiments/", experiment, "/dem_pilot.tif")
 
 rivers_sf <- st_read(shapefile_rivers)

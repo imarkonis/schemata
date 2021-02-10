@@ -2,8 +2,9 @@
 
 options(repos='http://cran.rstudio.org')
 have_packages <- installed.packages()
-cran_packages <- c('remotes',  'data.table', 'tidyverse', 'dbplyr', 'foreach', 'parallel', 
-                   'sf', 'sfc', 'rgdal', 'RPostgres', 'rpostgis', 'googledrive', 'rgee',
+cran_packages <- c('remotes',  'data.table', 'tidyverse', 'dbplyr', 'foreach', 'parallel', 'doParallel',
+                   'sf', 'sfc', 'rgdal', 'lwgeom', 'rasterdiv',
+                   'RPostgres', 'rpostgis', 'googledrive', 'rgee',
                    'kohonen', 'randomForest', 'tree', 'parallelSVM', 'spatialEco')
 to_install <- setdiff(cran_packages, have_packages[, 1])
 if(length(to_install)>0) install.packages(to_install)

@@ -8,7 +8,10 @@ dir.create(path_results)
 basin_classes <- readRDS(paste0("./results/experiments/", experiment, "/basin_soms_9_classes.rds"))
 basin_feats <- readRDS(paste0("./data/experiments/", experiment, "/basin_feats.rds"))
 
-iterations <- rep(10000, cores_n)
+cores_n <- detectCores()
+registerDoParallel(cores = cores_n - 1)
+
+iterations <- rep(100000, cores_n)
 
 data_for_rf <- cbind(basin_classes$tot_riv_length, basin_classes$gc)
 basins_rf <- foreach(ntree = iterations, .combine = randomForest::combine, 

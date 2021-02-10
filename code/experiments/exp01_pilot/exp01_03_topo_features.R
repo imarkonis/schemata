@@ -26,10 +26,10 @@ cellStats(single_dem, 'max') - cellStats(single_dem, 'min')
 #csa::csas(single_dem)
 #aa <- csa::csas(dem_raster)
 
-cellStats(dem_raster, 'mean')
-cellStats(dem_raster, 'sd')
-cellStats(dem_raster, 'skew')
-cellStats(dem_raster, 'max') - cellStats(single_dem, 'min')
+cellStats(single_dem, 'mean')
+cellStats(single_dem, 'sd')
+cellStats(single_dem, 'skew')
+cellStats(single_dem, 'max') - cellStats(single_dem, 'min')
 
 # Validation plots
 par(mfrow = c(2, 2))

@@ -20,10 +20,10 @@ add.cluster.boundaries(basin_som, som_hc)
 
 cls = som_hc[basin_som$unit.classif]
 
-basin_feats$cluster <- factor(melt(som_hc[basin_som$unit.classif])[, 1])
+basin_feats$cluster <- factor(som_hc[basin_som$unit.classif])
 basin_feats[, n_clusters := .N, by = cluster]
 
-basins_sf <- st_read(paste0("./data/experiments/", experiment, "/basins_pilot_inter.shp"))
+basins_sf <- st_read(paste0("./data/experiments/", experiment, "/basins_pilot.shp"))
 basins_sf <- merge(basins_sf, basin_feats, by = "HYBAS_ID")
 
 saveRDS(basins_sf, paste0(path_results, 'basin_soms_9_classes.rds'))
