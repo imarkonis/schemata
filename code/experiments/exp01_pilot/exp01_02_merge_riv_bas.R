@@ -5,9 +5,6 @@ source('code/source/functions.R')
 source('code/source/geo_utils.R')
 source('code/source/experiments/exp_01.R')
 
-cores_n <- detectCores()
-registerDoParallel(cores = cores_n - 1)
-
 shapefile_rivers <- paste0("./data/experiments/", experiment, "/rivers_pilot.shp")
 shapefile_basins <- paste0("./data/experiments/", experiment, "/basins_pilot.shp")
 raster_dem <- paste0("./data/experiments/", experiment, "/dem_pilot.tif")
