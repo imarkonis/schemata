@@ -8,7 +8,7 @@ library(dbplyr)
 basin_tables <- vector()
 max_bas_level <- 12
 
-con <- dbConnect(Postgres(), dbname = 'schemata',       
+con <- dbConnect(Postgres(), dbname = 'earth',       
                  user = rstudioapi::askForPassword("Database user"),      
                  password = rstudioapi::askForPassword("Database password"))
 
