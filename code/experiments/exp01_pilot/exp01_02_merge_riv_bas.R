@@ -6,7 +6,7 @@ source('code/source/geo_utils.R')
 source('code/source/experiments/exp_01.R')
 
 cores_n <- detectCores()
-cs <- makeCluster(cores_n - 1)
+registerDoParallel(cores = cores_n - 1)
 
 shapefile_rivers <- paste0("./data/experiments/", experiment, "/rivers_pilot.shp")
 shapefile_basins <- paste0("./data/experiments/", experiment, "/basins_pilot.shp")
