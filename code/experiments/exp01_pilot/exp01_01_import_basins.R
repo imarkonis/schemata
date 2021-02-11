@@ -5,10 +5,10 @@ source('code/source/graphics.R')
 source('code/source/experiments/exp_01.R')
 
 data_loc <- "./data/raw/hydrosheds/"
-product <- "hydrobasins/standard/"
+product <- "hydrobasins/"
 region <- "eu/"
-where <- "hybas_eu_lev01-12_v1c/"
-shapefile_basins <- paste0(data_loc, product, region, where, "hybas_eu_lev10_v1c.shp")
+
+shapefile_basins <- paste0(data_loc, product, region, "hybas_eu_lev10_v1c.shp")
 
 basins_sf_raw <- st_read(shapefile_basins)
 basins_sf <- basins_sf_raw[basins_sf_raw$SUB_AREA > AREA_MIN & 

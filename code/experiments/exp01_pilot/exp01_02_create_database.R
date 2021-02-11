@@ -13,12 +13,13 @@ con <- dbConnect(Postgres(), dbname = 'earth',
                  password = rstudioapi::askForPassword("Database password"))
 
 for(basin_level in 3:max_bas_level){
-  basin_tables[basin_level - 2] <- paste0("hybas_eu_lev", 
-                                          formatC(basin_level, width = 2, format = "d", flag = "0"), 
-                                          "_v1c")
+  basin_tables[basin_level - 2] <- paste0("eu_", basin_level)
 }
 
-basin_tables_all <- st_read(con, basin_tables[1])
+aa <- paste0('hs_basins.', basin_tables[1])
+basin_tables_all <- st_read(con, aa)
+
+
 for(count in 2:length(basin_tables)){
   basin_tables_all <- bind_rows(basin_tables_all, st_read(con, basin_tables[count]))
 }
