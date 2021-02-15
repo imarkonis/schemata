@@ -25,7 +25,7 @@ import_hydrosheds_catchments <- function(shapefile_basins, shapefile_rivers, ras
   catchments <- list()
   basins_tot <- length(basins_sf$HYBAS_ID)
   cores_n <- detectCores()
-  cs <- makeCluster(cores_n - 1)
+  registerDoParallel(cores = cores_n - 1)
   catchments <- foreach(basin_n = 1:basins_tot) %dopar% {
     print(paste0(basin_n, ' / ', basins_tot))
     new_hydrosheds_catchment(basins_sf$HYBAS_ID[basin_n], 
