@@ -16,13 +16,13 @@ for(basin_level in 3:max_bas_level){
   basin_tables[basin_level - 2] <- paste0("eu_", basin_level)
 }
 
-eu_all <- st_read(con, query = paste0("SELECT * FROM ", "hs_basins.", basin_tables[1]))
+eu_all <- st_read(con, query = paste0("SELECT * FROM ", db_schema, ".", basin_tables[1]))
 
 for(bas_count in 2:length(basin_tables)){
-  eu_all <- bind_rows(eu_all, st_read(con, query = paste0("SELECT * FROM ", "hs_basins.", basin_tables[bas_count])))
+  eu_all <- bind_rows(eu_all, st_read(con, query = paste0("SELECT * FROM ", db_schema, ".", basin_tables[bas_count])))
 }
 
-write_sf(eu_all, con, Id(schema = "hs_basins", table = 'eu_all'))
+write_sf(eu_all, con, Id(schema = db_schema, table = 'eu_all'))
 
 #Validation plots
 
