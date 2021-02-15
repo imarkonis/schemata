@@ -8,8 +8,8 @@ basins_tot <- length(data_files)
 
 basins <- foreach(basin_n = 1:basins_tot, .packages = c('data.table', 'sf'), 
                   .combine = 'rbind') %dopar% {
-  basin <- readRDS(paste0(data_path, data_files[basin_n]))
-  basin_p_a <- data.table(pfaf_id = factor(basin_ids[basin_n]),
+  basin <- readRDS(paste0(data_path, 'basins/', data_files[basin_n]))
+  data.table(pfaf_id = factor(basin_ids[basin_n]),
                                 area = as.numeric(st_area(basin)),
                                 perimeter = as.numeric(st_length(basin)))
 }
