@@ -14,12 +14,12 @@ con <- dbConnect(Postgres(), dbname = db_name,
                  user = rstudioapi::askForPassword("Database user"),      
                  password = rstudioapi::askForPassword("Database password"))
 
-basins <- st_read(con, query = paste0("SELECT * FROM ", db_schema, ".eu_", basin_level))
+basins_eu <- st_read(con, query = paste0("SELECT * FROM ", db_schema, ".eu_", basin_level))
+basins_au <- st_read(con, query = paste0("SELECT * FROM ", db_schema, ".au_", basin_level))
+basins <- bind_rows(basins_au, basins_eu)
 
 basins <- basins %>% 
-#  filter(sub_area > 10^4) %>%
   select(pfaf_id) 
-
 basins <- merge(basins, lm_coefs, by = 'pfaf_id')
 
 plot(basins["slope"])
@@ -27,20 +27,36 @@ summary(lm_coefs)
 hist(lm_coefs$slope, breaks = 25)
 
 basins_2 <- basins %>% 
-  filter(slope < 2)
+  filter(slope < 2 & slope > 1.5)
 plot(basins_2["slope"])
 
 basin_feats[, gc := gc_estimate(perimeter, area)]
-basins_more <- merge(lm_coefs, basin_feats, by = 'pfaf_id')
+basins_more <- merge(lm_coefs, basin_feats, by = c('pfaf_id', 'region'))
 basins_more <- basins_more[complete.cases(basins_more)]
 
 to_plot <- basins_more[, .(area = max(area)), pfaf_id]
 to_plot <- unique(basins_more[to_plot, on = c('area', 'pfaf_id')])
 
-ggplot(to_plot[gc < 5 & slope < 2.2], aes(gc, slope)) +
+ggplot(to_plot[gc < 5], aes(gc, slope, col = region)) +
   geom_point() +
   theme_light()
 
+ggplot(to_plot[gc < 5], aes(x = log(gc), fill = region)) +
+  geom_density(alpha = 0.5) +
+  theme_light()
 
+ggplot(basin_feats, aes(log(area), log(perimeter), col = log(gc))) +
+  geom_point() +
+  theme_light()
+
+ggplot(basin_feats[gc < 3], aes(log(area), log(perimeter), col = log(gc))) +
+  geom_point() +
+  theme_light()
+
+ggplot(basin_feats, aes(log(area), log(perimeter), col = region)) +
+  geom_smooth(method = 'lm', se = F) +
+  theme_light()
+
+lm_fit <- lm(log(area) ~ log(perimeter), data = basins_more)
 
 

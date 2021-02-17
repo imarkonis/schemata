@@ -7,23 +7,29 @@ library(dbplyr)
 
 basin_tables <- vector()
 max_bas_level <- 12
-
+regions <- list.dirs('./data/raw/hydrosheds/hydrobasins', full.names = FALSE)[-1]
+regions_n <- length(regions)
+  
 con <- dbConnect(Postgres(), dbname = db_name,       
                  user = rstudioapi::askForPassword("Database user"),      
                  password = rstudioapi::askForPassword("Database password"))
 
-for(basin_level in 3:max_bas_level){
-  basin_tables[basin_level - 2] <- paste0("eu_", basin_level)
+for(region_count in 1:regions_n){
+  for(basin_level in 3:max_bas_level){
+    basin_tables[basin_level - 2] <- paste0(regions[region_count], "_", basin_level)
+  }
+  region_all <- st_read(con, query = paste0("SELECT * FROM ", db_schema, ".", basin_tables[1]))
+  region_all$pfaf_id <- region_all$pfaf_id
+  for(bas_count in 2:length(basin_tables)){
+    region <- st_read(con, query = paste0("SELECT * FROM ", db_schema, ".", basin_tables[bas_count]))
+    region$pfaf_id <- as.integer(region$pfaf_id)
+    region_all <- bind_rows(region_all, region)
+  }
+    table_name <- paste0(regions[region_count], '_all')
+  write_sf(region_all, con, Id(schema = db_schema, table = table_name))
+  table_name <- paste0(regions[region_count], '_basins')
+  write_sf(region_all["pfaf_id"], con, Id(schema = db_schema, table = table_name))
 }
-
-eu_all <- st_read(con, query = paste0("SELECT * FROM ", db_schema, ".", basin_tables[1]))
-
-for(bas_count in 2:length(basin_tables)){
-  eu_all <- bind_rows(eu_all, st_read(con, query = paste0("SELECT * FROM ", db_schema, ".", basin_tables[bas_count])))
-}
-
-write_sf(eu_all, con, Id(schema = db_schema, table = 'eu_all'))
-
 #Validation plots
 
 single_pfaf_id <- 225190431120
