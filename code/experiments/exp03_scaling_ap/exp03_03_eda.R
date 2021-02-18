@@ -30,7 +30,10 @@ basins_2 <- basins %>%
   filter(slope < 2 & slope > 1.5)
 plot(basins_2["slope"])
 
-basin_feats[, gc := gc_estimate(perimeter, area)]
+basin_feats[, gc := gc_coef(perimeter, area)]
+basin_feats[, fractal := fractal_dim(perimeter, area)]
+basin_feats[, circ_area := perimeter ^ 2 / (4 * pi)]
+basin_feats[, sqr_area := perimeter ^ 2 / 4]
 basins_more <- merge(lm_coefs, basin_feats, by = c('pfaf_id', 'region'))
 basins_more <- basins_more[complete.cases(basins_more)]
 
@@ -45,6 +48,10 @@ ggplot(to_plot[gc < 5], aes(x = log(gc), fill = region)) +
   geom_density(alpha = 0.5) +
   theme_light()
 
+ggplot(to_plot, aes(x = fractal, fill = region)) +
+  geom_density(alpha = 0.5) +
+  theme_light()
+
 ggplot(basin_feats, aes(log(area), log(perimeter), col = log(gc))) +
   geom_point() +
   theme_light()
@@ -53,8 +60,14 @@ ggplot(basin_feats[gc < 3], aes(log(area), log(perimeter), col = log(gc))) +
   geom_point() +
   theme_light()
 
-ggplot(basin_feats, aes(log(area), log(perimeter), col = region)) +
-  geom_smooth(method = 'lm', se = F) +
+ggplot(basin_feats) +
+  geom_smooth(aes(log(perimeter), log(area), col = region), method = 'lm', se = F) +
+  geom_smooth(aes(log(perimeter), log(circ_area),  col = 'circle'), method = 'lm', se = F) +
+  theme_light()
+
+ggplot(basin_feats, aes(log(area), log(gc), group = pfaf_id, col = region)) +
+  geom_line() +
+  #geom_smooth(method = 'lm', se = F) +
   theme_light()
 
 lm_fit <- lm(log(area) ~ log(perimeter), data = basins_more)
