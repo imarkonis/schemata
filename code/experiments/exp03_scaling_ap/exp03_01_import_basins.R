@@ -1,4 +1,5 @@
 source('code/source/libs.R')
+source('code/source/functions.R')
 source('code/source/experiments/exp_03.R')
 
 library(RPostgres)
@@ -6,8 +7,9 @@ library(sf)
 library(dbplyr)
 library(dplyr)
 
-min_bas_level <- 6
-max_bas_level <- 12
+min_bas_level <- 4
+max_bas_level <- 11
+bas_levels <- c(min_bas_level, max_bas_level)
 dir.create(paste0('./data/experiments/', experiment, '/basins/level_', min_bas_level))
 basin_tables <- vector()
 
@@ -15,12 +17,9 @@ con <- dbConnect(Postgres(), dbname = db_name,
                  user = rstudioapi::askForPassword("Database user"),      
                  password = rstudioapi::askForPassword("Database password"))
 
-basins_eu <- st_read(con, query = paste0("SELECT * FROM ", db_schema, ".eu_basins"))
-basins_eu$region <- factor("eu")
-basins_au <- st_read(con, query = paste0("SELECT * FROM ", db_schema, ".au_basins"))
-basins_au$region <- factor("au")
+basins_all <- db_import_bas_borders(regions_all, bas_levels)
+write_sf(basins_all, con, Id(schema = db_schema, table = 'basins_all_regions_4_11'))
 
-basins_all <- bind_rows(basins_au, basins_eu)
 
 basins_min_level <- basins_all %>% 
   filter(nchar(pfaf_id) == min_bas_level) 

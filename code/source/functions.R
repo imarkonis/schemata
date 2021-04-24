@@ -34,6 +34,21 @@ import_hydrosheds_catchments <- function(shapefile_basins, shapefile_rivers, ras
   return(catchments)
 }
 
+db_import_bas_borders <- function(regions, lvl_range){
+  lvl_range <- lvl_range[1]:lvl_range[2]
+  table_names <- apply(expand.grid(regions, as.character(lvl_range)), 1, paste0, collapse = '_')
+  tables_n <- length(table_names)
+  bas_borders <- st_read(con, query = paste0("SELECT pfaf_id, geom FROM basin_boundaries.", table_names[1]))
+  bas_borders$pfaf_id <- as.character(bas_borders$pfaf_id)   
+  for(table_count in 1:tables_n){
+    basin_table <- st_read(con, query = paste0("SELECT pfaf_id, geom FROM basin_boundaries.", table_names[table_count]))
+    basin_table$pfaf_id <- as.character(basin_table$pfaf_id)                          
+    bas_borders <- bind_rows(bas_borders, basin_table)
+    print(table_names[table_count])
+  }
+  return(bas_borders)
+}
+
 plot.catchment <- function(object) {
   dem_dt <- data.table(rasterToPoints(object$topo))
   colnames(dem_dt) <- c('lon', 'lat', 'elevation')

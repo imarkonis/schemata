@@ -6,7 +6,7 @@ library(dplyr)
 library(dbplyr)
 
 basin_tables <- vector()
-max_bas_level <- 12
+max_bas_level <- 11
 regions <- list.dirs('./data/raw/hydrosheds/hydrobasins', full.names = FALSE)[-1]
 regions_n <- length(regions)
   
@@ -19,11 +19,12 @@ for(region_count in 1:regions_n){
     basin_tables[basin_level - 2] <- paste0(regions[region_count], "_", basin_level)
   }
   region_all <- st_read(con, query = paste0("SELECT * FROM ", db_schema, ".", basin_tables[1]))
-  region_all$pfaf_id <- region_all$pfaf_id
+  region_all$pfaf_id <- as.character(region_all$pfaf_id)
   for(bas_count in 2:length(basin_tables)){
     region <- st_read(con, query = paste0("SELECT * FROM ", db_schema, ".", basin_tables[bas_count]))
-    region$pfaf_id <- as.integer(region$pfaf_id)
+    region$pfaf_id <- as.character(region$pfaf_id)
     region_all <- bind_rows(region_all, region)
+    print(basin_tables[bas_count])
   }
     table_name <- paste0(regions[region_count], '_all')
   write_sf(region_all, con, Id(schema = db_schema, table = table_name))

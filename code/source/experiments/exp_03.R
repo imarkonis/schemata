@@ -1,4 +1,5 @@
 experiment <- 'exp03'
+regions_all <- list.dirs('./data/raw/hydrosheds/hydrobasins', full.names = FALSE)[-1]
 
 # Paths
 
@@ -11,7 +12,7 @@ if(!dir.exists(data_path)) {dir.create(paste0('./data/experiments/', experiment)
 # Database
 
 db_name <- 'earth'
-db_schema <- 'hs_basins'
+db_schema <- 'basin_boundaries'
 
 # Parallel computing
 
