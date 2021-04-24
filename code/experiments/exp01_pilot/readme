@@ -8,7 +8,7 @@ Workflow:
 
 3. Merge geodata
 
-4. Estimate basin features from their geomtric properties
+4. Estimate basin features from their geometric properties
 
 5. Classify basins by the features (Self-Organizing Maps)
 
