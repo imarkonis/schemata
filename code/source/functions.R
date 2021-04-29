@@ -34,6 +34,15 @@ import_hydrosheds_catchments <- function(shapefile_basins, shapefile_rivers, ras
   return(catchments)
 }
 
+#Does not work -> turncates query to 255 characters
+get_bas_bounds <- function(bas_ids, connection, schema){
+  ids_as_string <- toString(bas_ids)
+  ids_as_string <- sapply(strsplit(ids_as_string, '[, ]+'), function(x) toString(sQuote(x, FALSE)))
+  bas_bounds <- st_read(connection, paste0("SELECT * FROM ", schema, ".", 
+                                    'basins_all_regions_4_11 WHERE pfaf_id IN (', ids_as_string, ')'))
+  return(bas_bounds)
+}
+
 db_import_bas_borders <- function(regions, lvl_range){
   lvl_range <- lvl_range[1]:lvl_range[2]
   table_names <- apply(expand.grid(regions, as.character(lvl_range)), 1, paste0, collapse = '_')

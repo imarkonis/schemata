@@ -1,4 +1,5 @@
 source('code/source/libs.R')
+source('code/source/functions.R')
 source('code/source/database.R')
 
 library(RPostgres)
@@ -43,13 +44,13 @@ for(i in string_length:3){
   upscale_pfaf_ids[i - 2] <- substr(single_pfaf_id, start = 1, stop = i)
 }
 
+
 ids_as_string <- toString(upscale_pfaf_ids)
 ids_as_string <- sapply(strsplit(ids_as_string, '[, ]+'), function(x) toString(sQuote(x, FALSE)))
-
-alternative <- st_read(con, query = paste0("SELECT * FROM ", db_schema, ".", 
+test_basins <- st_read(con, query = paste0("SELECT * FROM ", db_schema, ".", 
 'basins_all_regions_4_11 WHERE pfaf_id IN (', ids_as_string, ')'))
 
-ggplot(alternative) +
+ggplot(test_basins) +
   geom_sf() +
   theme_light()
 
