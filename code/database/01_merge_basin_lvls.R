@@ -32,6 +32,7 @@ for(region_count in 1:regions_n){
   table_name <- paste0(regions[region_count], '_basins')
   write_sf(region_all["pfaf_id"], con, Id(schema = db_schema, table = table_name))
 }
+
 #Validation plots
 
 single_pfaf_id <- 225190431120
@@ -42,9 +43,18 @@ for(i in string_length:3){
   upscale_pfaf_ids[i - 2] <- substr(single_pfaf_id, start = 1, stop = i)
 }
 
-basin_all <- st_read(con, basin_tables_all)
-single_basin <- basin_tables_all %>% filter(pfaf_id %in% upscale_pfaf_ids)
+ids_as_string <- toString(upscale_pfaf_ids)
+ids_as_string <- sapply(strsplit(ids_as_string, '[, ]+'), function(x) toString(sQuote(x, FALSE)))
 
-ggplot(single_basin) +
-  geom_sf(aes(fill = log(sub_area))) +
+alternative <- st_read(con, query = paste0("SELECT * FROM ", db_schema, ".", 
+'basins_all_regions_4_11 WHERE pfaf_id IN (', ids_as_string, ')'))
+
+ggplot(alternative) +
+  geom_sf() +
   theme_light()
+
+#NOTE: For geting the SQL query right use show_query()
+
+#single_basin_query <- tbl(con, in_schema('hs_basins', "basins_all_regions_4_11")) %>% 
+#  filter(pfaf_id %in% upscale_pfaf_ids) %>% 
+#  show_query()

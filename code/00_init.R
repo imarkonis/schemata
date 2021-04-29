@@ -19,7 +19,8 @@ dir.create('./results')
 dir.create('./results/experiments') 
 dir.create('./results/presentations') 
 dir.create('./results/figures')
-dir.create('./results/figures/archive') #figures not used in papers/presentations
+dir.create('./results/figures/communication') #figures used in papers/presentations
+dir.create('./results/figures/archive') #old figures that are not used
 dir.create('./docs')
 dir.create('./docs/literature')
 

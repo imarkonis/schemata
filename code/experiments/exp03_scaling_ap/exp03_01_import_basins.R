@@ -20,7 +20,6 @@ con <- dbConnect(Postgres(), dbname = db_name,
 basins_all <- db_import_bas_borders(regions_all, bas_levels)
 write_sf(basins_all, con, Id(schema = db_schema, table = 'basins_all_regions_4_11'))
 
-
 basins_min_level <- basins_all %>% 
   filter(nchar(pfaf_id) == min_bas_level) 
 basin_ids <- basins_min_level$pfaf_id
