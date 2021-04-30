@@ -2,6 +2,8 @@
 
 results_path <- paste0('./results/database/')
 data_path <- paste0('./data/database/')
+basin_dem_path <- "./data/raw/hydrosheds/hydrosheds_dem/dem_15s_grid/eu_dem_15s/"
+river_shp_path <- "./data/raw/hydrosheds/hydroatlas/RiverATLAS_Data_v10_shp/"
 
 if(!dir.exists(results_path)) {dir.create(paste0('./results/database/'))}
 if(!dir.exists(data_path)) {dir.create(paste0('./data/database/'))}
