@@ -9,7 +9,7 @@ library(dplyr)
 basin_tables <- vector()
 max_bas_level <- 12
 
-con <- dbConnect(Postgres(), dbname = db_name,       
+con <- dbConnect(Postgres(), dbname = db_name, host = host_ip, port = port_n,         
                  user = rstudioapi::askForPassword("Database user"),      
                  password = rstudioapi::askForPassword("Database password"))
 basin_tables_all <- read_sf(con, Id(schema = "basin_boundaries", table = "basins_all_regions_4_11"))

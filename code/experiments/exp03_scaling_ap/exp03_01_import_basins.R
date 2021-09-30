@@ -13,7 +13,7 @@ bas_levels <- c(min_bas_level, max_bas_level)
 dir.create(paste0('./data/experiments/', experiment, '/basins/level_', min_bas_level))
 basin_tables <- vector()
 
-con <- dbConnect(Postgres(), dbname = db_name, host = '127.0.0.1', port = '5432',     
+con <- dbConnect(Postgres(), dbname = db_name, host = host_ip, port = port_n,     
                  user = rstudioapi::askForPassword("Database user"),      
                  password = rstudioapi::askForPassword("Database password"))
 

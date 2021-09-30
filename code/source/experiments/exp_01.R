@@ -12,6 +12,8 @@ if(!dir.exists(data_path)) {dir.create(paste0('./data/experiments/', experiment)
 
 db_name <- 'earth'
 db_schema <- 'hs_basins'
+host_ip <- '127.0.0.1' 
+port_n <- '5432'
 
 # Parallel computing
 

@@ -10,7 +10,7 @@ max_bas_level <- 11
 regions <- list.dirs('./data/raw/hydrosheds/hydrobasins', full.names = FALSE)[-1]
 regions_n <- length(regions)
   
-con <- dbConnect(Postgres(), dbname = db_name,       
+con <- dbConnect(Postgres(), dbname = db_name, host = host_ip, port = port_n,        
                  user = rstudioapi::askForPassword("Database user"),      
                  password = rstudioapi::askForPassword("Database password"))
 
