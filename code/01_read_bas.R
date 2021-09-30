@@ -10,7 +10,7 @@ dem_raster <- raster(rasterfile_dem)
 riverfile_shp <- paste0(river_shp_path, "RiverATLAS_v10_eu.shp")
 rivers_sf <- st_read(riverfile_shp)
 
-con <- dbConnect(Postgres(), dbname = db_name,       
+con <- dbConnect(Postgres(), dbname = db_name, host = host_ip, port = port_n,        
                  user = rstudioapi::askForPassword("Database user"),      
                  password = rstudioapi::askForPassword("Database password"))
 
