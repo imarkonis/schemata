@@ -13,11 +13,11 @@ bas_levels <- c(min_bas_level, max_bas_level)
 dir.create(paste0('./data/experiments/', experiment, '/basins/level_', min_bas_level))
 basin_tables <- vector()
 
-con <- dbConnect(Postgres(), dbname = db_name,       
+con <- dbConnect(Postgres(), dbname = db_name, host = '127.0.0.1', port = '5432',     
                  user = rstudioapi::askForPassword("Database user"),      
                  password = rstudioapi::askForPassword("Database password"))
 
-basins_all <- db_import_bas_borders(regions_all, bas_levels)
+basins_all <- db_import_bas_borders(con, regions_all, bas_levels)
 write_sf(basins_all, con, Id(schema = db_schema, table = 'basins_all_regions_4_11'))
 
 basins_min_level <- basins_all %>% 

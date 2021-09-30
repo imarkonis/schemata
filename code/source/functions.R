@@ -43,7 +43,7 @@ get_bas_bounds <- function(bas_ids, connection, schema){
   return(bas_bounds)
 }
 
-db_import_bas_borders <- function(regions, lvl_range){
+db_import_bas_borders <- function(db_con, regions, lvl_range){
   lvl_range <- lvl_range[1]:lvl_range[2]
   table_names <- apply(expand.grid(regions, as.character(lvl_range)), 1, paste0, collapse = '_')
   tables_n <- length(table_names)
