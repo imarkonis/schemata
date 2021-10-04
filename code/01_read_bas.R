@@ -15,7 +15,7 @@ con <- dbConnect(Postgres(), dbname = db_name, host = host_ip, port = port_n,
                  password = rstudioapi::askForPassword("Database password"))
 
 # Crop basins in the region
-query_crop <- "WITH region AS (SELECT * FROM (VALUES(1,ST_GeomFromText('POLYGON((19 35,28 35,28 42,19 42,19 35))',4326))) Region (id, geom)) SELECT ST_Intersection(region.geom, st_makevalid(eu_basins.geom)) FROM region JOIN hs_basins.eu_basins ON ST_Intersects(region.geom, eu_basins.geom)"
+query_crop <- "WITH region AS (SELECT * FROM (VALUES(1,ST_GeomFromText('POLYGON((19 35,28 35,28 42,19 42,19 35))',4326))) Region (id, geom)) SELECT ST_Intersection(region.geom, st_makevalid(eu_basins.geom)) FROM region JOIN basin_boundaries.eu_basins ON ST_Intersects(region.geom, eu_basins.geom)"
 # Get all basins that overlap the region
 query_overlap <- "SELECT geom FROM hs_basins.eu_basins WHERE ST_Intersects(st_makevalid(eu_basins.geom), ST_GeomFromText('POLYGON((43 52,45 52,45 55,43 55,43 52))',4326))"
 # Get basins within the region
