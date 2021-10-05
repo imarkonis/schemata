@@ -28,5 +28,10 @@ plot(region_bas)
 plot(region_riv)
 plot(crop_basin(region_bas, dem_raster))
 
+#Some tests here
+rasterfile_dem <- paste0("./data/raw/hydrosheds/hydrosheds_dem/dem_3s_grid/n35e020_con_grid/n35e020_con/n35e020_con/w001001.adf") 
+dem_raster <- raster(rasterfile_dem)
+plot(dem_raster)
+
 test <- st_read(con, query = paste0("SELECT (ord_stra) FROM river_atlas.eu_rivers"))
 hist(test$ord_stra)
