@@ -10,11 +10,12 @@ shapefile_rivers <- paste0("./data/experiments/", experiment, "/rivers.shp")
 rasterfile_dem <- paste0("./data/experiments/", experiment, "/dem.tif")
 
 rivers_sf <- st_read(shapefile_rivers)
+#rivers_sf <- region_riv Need to change the river import -> connect to database
 dem_raster <- raster(rasterfile_dem)
 
 res <- 0.5
-lon_cuts <- seq(LON_MIN, LON_MAX, 0.5)
-lat_cuts <- seq(LAT_MIN, LAT_MAX, 0.5)
+lon_cuts <- seq(dem_raster@extent@xmin, dem_raster@extent@xmax, res)
+lat_cuts <- seq(dem_raster@extent@ymin, dem_raster@extent@ymax, res)
 
 for(lon_count in 1:(length(lon_cuts) - 1)){
   for(lat_count in 1:(length(lat_cuts) - 1)){
