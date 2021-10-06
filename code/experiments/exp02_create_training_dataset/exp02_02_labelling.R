@@ -6,14 +6,13 @@ source('code/source/geo_utils.R')
 library(stars)
 
 dir.create(paste0("./data/experiments/", experiment, '/training'))
-shapefile_rivers <- paste0("./data/experiments/", experiment, "/rivers.shp")
-rasterfile_dem <- paste0("./data/experiments/", experiment, "/dem.tif")
-
-rivers_sf <- st_read(shapefile_rivers)
-#rivers_sf <- region_riv Need to change the river import -> connect to database
+shapefile_rivers <- paste0("./data/experiments/", experiment, "/riv_", region, ".shp")
 dem_raster <- raster(rasterfile_dem)
 
-res <- 0.5
+rivers_sf <- st_read(shapefile_rivers)
+dem_raster <- raster(rasterfile_dem)
+
+res <- 0.2
 lon_cuts <- seq(dem_raster@extent@xmin, dem_raster@extent@xmax, res)
 lat_cuts <- seq(dem_raster@extent@ymin, dem_raster@extent@ymax, res)
 
@@ -31,15 +30,17 @@ for(lon_count in 1:(length(lon_cuts) - 1)){
                                           ymax = lat_cuts[lat_count + 1]))
     
     pal <- colorRampPalette(rep("black", 2))
-    rivers_raster <- st_rasterize(rivers_subset[, "CONTINENT"])
+    rivers_raster <- st_rasterize(rivers_subset)
     png(paste0("./data/experiments/", experiment, '/training/',
                lon_cuts[lon_count], "_", lat_cuts[lat_count], "_rivers.png"))
-    plot(rivers_raster, main = NULL, key.pos = NULL, col = pal(2))
+    par(mar = c(0,0,0,0))
+    plot(as(rivers_raster, "Raster"), main = NULL, key.pos = NULL, col = pal(2),  legend = FALSE, axes=FALSE, box = FALSE)
     dev.off()
-    pal <- colorRampPalette(c("black", "white"))
+    pal <- colorRampPalette(c("#cb9358", "#955f3b"))
     png(paste0("./data/experiments/", experiment, '/training/',
                lon_cuts[lon_count], "_", lat_cuts[lat_count], "_dem.png"))
-    plot(dem_raster_subset, col = pal(100),  legend = FALSE, axes=FALSE, box = FALSE)
+    par(mar = c(0,0,0,0))
+    plot(dem_raster_subset, col = pal(100),  key.pos = NULL, legend = FALSE, axes=FALSE, box = FALSE)
 
     dev.off()
   }
