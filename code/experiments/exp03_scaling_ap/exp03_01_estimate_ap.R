@@ -11,8 +11,10 @@ con <- dbConnect(Postgres(), dbname = db_name, host = host_ip, port = port_n,
                  user = rstudioapi::askForPassword("Database user"),      
                  password = rstudioapi::askForPassword("Database password"))
 
-bas_borders <- st_read(con, query = "SELECT * FROM basin_boundaries.basins_all_regions_4_11")
-
+for(region_count in 3:length(regions_all)){
+  print(regions_all[region_count])
+  
+bas_borders <- st_read(con, query = paste0("SELECT * FROM basin_boundaries.", regions_all[region_count], "_all"))
 
 basins_n <- length(bas_borders$pfaf_id)
 basins <- foreach(basin_count = 1:basins_n, .packages = c('data.table', 'sf'), 
@@ -26,11 +28,7 @@ basins <- foreach(basin_count = 1:basins_n, .packages = c('data.table', 'sf'),
                   }
 
 basins <- unique(basins[complete.cases(basins)])
-saveRDS(basins, paste0(data_path, 'basin_feats_', basin_level, '.rds'))
+saveRDS(basins, paste0(data_path, 'basin_feats_', regions_all[region_count], '.rds'))
+rm(basins); gc()
+}
 
-basins[, log_area := log(area)]
-basins[, log_perimeter := log(perimeter)]
-lm_coefs <- basins[, as.list(coef(lm(log_area ~ log_perimeter))), .(pfaf_id, region)]
-lm_coefs <- unique(lm_coefs[complete.cases(lm_coefs)])
-colnames(lm_coefs)[3:4] <- c('intercept', 'slope')
-saveRDS(lm_coefs, paste0(results_path, 'pa_lm_coefs_', basin_level, '.rds'))
