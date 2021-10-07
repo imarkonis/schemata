@@ -17,12 +17,18 @@ con <- dbConnect(Postgres(), dbname = db_name,
 basins_eu <- st_read(con, query = paste0("SELECT * FROM ", db_schema, ".eu_", basin_level))
 basins_au <- st_read(con, query = paste0("SELECT * FROM ", db_schema, ".au_", basin_level))
 basins <- bind_rows(basins_au, basins_eu)
+basins_no_coast <- basins[basins$coast == 0,]
 
 basins <- basins %>% 
   select(pfaf_id) 
 basins <- merge(basins, lm_coefs, by = 'pfaf_id')
 
+basins_no_coast <- basins_no_coast %>% 
+  select(pfaf_id) 
+basins_no_coast <- merge(basins_no_coast, lm_coefs, by = 'pfaf_id')
+
 plot(basins["slope"])
+plot(basins_no_coast["slope"])
 summary(lm_coefs)
 hist(lm_coefs$slope, breaks = 25)
 

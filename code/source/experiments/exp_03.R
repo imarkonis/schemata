@@ -19,4 +19,4 @@ port_n <- '5432'
 # Parallel computing
 
 cores_n <- detectCores()
-registerDoParallel(cores = cores_n - 1)
+registerDoParallel(cores = cores_n - 4)
