@@ -13,6 +13,9 @@ colset_mid_qual <- colset_mid[c(11, 2, 4, 6,  1, 8, 10, 5, 7, 3, 9, 12)]
 palette_mid <- colorRampPalette(colset_mid)
 palette_mid_qual <- colorRampPalette(colset_mid_qual)
 
+palette_RdBu <- colorRampPalette(rev(c('#d73027','#f46d43','#fdae61','#fee090','#fef0d9','#e0f3f8','#abd9e9','#74add1','#4575b4')), space = "rgb")
+gradient_RdBu <- palette_RdBu(100)
+
 #Plots river network
 plot_rivers <- function(sf_object){
   IDs <- unique(sf_object$BAS_ID)
