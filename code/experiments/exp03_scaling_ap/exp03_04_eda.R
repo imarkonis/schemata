@@ -23,11 +23,9 @@ ggplot(to_plot, aes(x = gc, col = value)) +
   scale_color_manual(values = palette_RdBu(10)) +
   theme_light()
 
-
-
 to_plot <- melt(basins_qq[, c(6, 7)], id.vars = 'fractal')
 to_plot <- to_plot[complete.cases(to_plot)]
-ggplot(to_plot, aes(x = fractal, col = value)) +
+ggplot(to_plot[1:10,], aes(x = fractal, col = value)) +
   geom_density() +
   xlim(1.14, 1.3) +
   scale_color_manual(values = palette_RdBu(16)) +
@@ -116,7 +114,6 @@ ggplot(basin_feats, aes(x = fractal, col = elev_class)) +
   geom_density() +
   xlim(1.14, 1.3) +
   theme_light()
-
 
 
 lm_coefs_dry <- basin_feats[prcp < 30, as.list(coef(lm(log(area) ~ log(perimeter))))]
