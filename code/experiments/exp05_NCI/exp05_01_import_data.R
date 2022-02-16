@@ -19,9 +19,6 @@ dem_raster <- raster(rasterfile_dem)
 #load("dem_raster.Rdata")
 rm(list=c("usern", "passwordn", "dsn", "rasterfile_dem"))
 
-# Find Main River 
-# Plot just one river
-# get dem val at a point 
 
 con <- dbConnect(Postgres(), dbname = db_name, host = host_ip, port = port_n,        
                  user = rstudioapi::askForPassword("Database user"),      
@@ -33,7 +30,7 @@ query_riv_allinfo <- paste0("SELECT * FROM river_atlas.", schema_tables$table_na
 
 region_rivall <- st_read(con, query = query_riv_allinfo)
 #save(region_rivall, file = "region_rivall.Rdata")
-load("region_rivall.Rdata")
+#load("region_rivall.Rdata")
 
 dt <- data.table(region_rivall)
 dt_oc <- dt[ord_clas == 1]
@@ -52,3 +49,4 @@ if(.Platform$OS.type == "unix") {
 
 river_xyz_dt<- as.data.table(do.call(rbind, river_xyz))
 
+saveRDS(river_xyz_dt, paste0(data_path, '/',schema_tables$table_name[5],'_river_xyz.rds'))

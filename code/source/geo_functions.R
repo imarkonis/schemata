@@ -25,7 +25,7 @@ NCI <- function(z_s, z_l, z_min, z_max){
 
 #elevation if river was a straight line
 z_straight <- function(l_distance,m_straight, z_min){
-  return(m_straight*l+z_min)
+  return(m_straight*l_distance+z_min)
 }
 
 #distance from min
