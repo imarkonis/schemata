@@ -7,7 +7,7 @@ library(dbplyr)
 library(dplyr)
 
 basin_tables <- vector()
-max_bas_level <- 12
+max_bas_level <- 11
 
 con <- dbConnect(Postgres(), dbname = db_name, host = host_ip, port = port_n,         
                  user = rstudioapi::askForPassword("Database user"),      
@@ -25,11 +25,16 @@ for(i in string_length:3){
 single_basin <- basin_tables_all %>% filter(pfaf_id %in% upscale_pfaf_ids)
 saveRDS(single_basin, paste0('./data/experiments/', experiment, '/basins/single_basin.rds'))
 
-single_pfaf_id <- '225'
-multi_basins <- basin_tables_all %>% 
-  mutate(short_pfaf_id = substr(pfaf_id, 1, 3)) %>% 
-  filter(short_pfaf_id %in% single_pfaf_id)
-saveRDS(multi_basins, paste0('./data/experiments/', experiment, '/basins/basins_225.rds'))
+sample_region <- regions_all[5] # Sample region is Europe
+sample_pfaf_id <- 22
+
+basin_22 <- st_read(con, query = paste0("SELECT * FROM basin_boundaries.", 
+                            sample_region, "_all WHERE pfaf_id like '", sample_pfaf_id, "%'"))
+
+
+basin_222 <- st_read(con, query = paste0("SELECT * FROM basin_boundaries.", 
+                      sample_region, "_all WHERE pfaf_id like '", sample_pfaf_id,"%'"))
+saveRDS(basin_222, paste0('./data/experiments/', experiment, '/basins/basins_222.rds'))
 
 single_pfaf_id <- '222'
 multi_basins <- basin_tables_all %>% 
@@ -52,6 +57,6 @@ ggplot(single_basin) +
   geom_sf() +
   theme_light()
 
-ggplot(multi_basins) +
+ggplot(basin_222) +
   geom_sf() +
   theme_light()

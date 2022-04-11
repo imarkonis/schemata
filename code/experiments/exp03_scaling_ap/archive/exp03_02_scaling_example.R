@@ -22,7 +22,7 @@ pilot_basin <- data.table(cbind(HYBAS_ID = pilot_basin$pfaf_id,
                        area = st_area(pilot_basin),
                        perimeter = st_length(pilot_basin_line)))
 
-ggplot(pilot_basin, aes(log(area), log(perimeter))) +
+ggplot(pilot_basin, aes(log(as.numeric(area)), log(as.numeric(perimeter)))) +
   geom_point() +
   theme_light()
 
