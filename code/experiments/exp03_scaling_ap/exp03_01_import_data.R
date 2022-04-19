@@ -27,6 +27,13 @@ for(region_count in 1:length(regions_all)){
   basin_feats[, gc := gc_coef(perimeter, area)]
   basin_feats[, fractal := fractal_dim(perimeter, area)]
   basins <- unique(basins[complete.cases(basins)])
+  
+  basin_feats[, bas_type := factor("closed")] 
+  basin_feats[as.numeric(pfaf_id) %% 2 == 0 & substr(as.numeric(pfaf_id), 
+                                                  nchar(as.numeric(pfaf_id)), 
+                                                  nchar(as.numeric(pfaf_id))) != 0, bas_type := factor("sub-basin")] 
+  basin_feats[as.numeric(pfaf_id) %% 2 == 1, bas_type := factor("interbasin")] 
+  
   saveRDS(basins, paste0(data_path, 'basin_feats_', regions_all[region_count], '.rds'))
   rm(basins); gc()
 }

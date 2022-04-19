@@ -84,7 +84,6 @@ basin_atlas_quant <- basin_atlas_quant[ , lapply(.SD, factor, labels = seq(0.1, 
 basin_atlas_factors <- cbind(basin_atlas[, c(1, 3, 7, 15, 16)], basin_atlas_quant)
 
 basins_atlas_quant_feats <- merge(basin_feats, basin_atlas_factors, by = c('hybas_id', 'level'))
-basins_atlas_quant_feats[, area_quant := ordered(quantcut(area, 10), labels = seq(0.1, 1, 0.1)), by = 'level']
 
 saveRDS(basins_atlas_quant_feats, paste0(data_path, 'basin_atlas_feats_qq.rds'))
 saveRDS(basins_atlas_feats, paste0(data_path, 'basin_atlas_feats.rds'))

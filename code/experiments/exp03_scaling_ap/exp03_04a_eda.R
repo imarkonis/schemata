@@ -1,11 +1,12 @@
 source('code/source/libs.R')
 source('code/source/graphics.R')
 source('code/source/experiments/exp_03.R')
+library(gtools)
 
 basins <- readRDS(paste0(data_path, 'basin_atlas_feats.rds'))
 basins_qq <- readRDS(paste0(data_path, 'basin_atlas_feats_qq.rds'))
 
-to_plot <- melt(basins_qq[, c(-1:-5, -8:-11)], id.vars = c('fractal', 'gc'))
+to_plot <- melt(basins_qq[, c(-1:-5, -8:-12, -22)], id.vars = c('fractal', 'gc'))
 to_plot <- to_plot[complete.cases(to_plot)]
 
 ggplot(to_plot, aes(x = fractal, col = value)) +
@@ -25,7 +26,7 @@ ggplot(to_plot, aes(x = gc, col = value)) +
 
 to_plot <- melt(basins_qq[, c(6, 7)], id.vars = 'fractal')
 to_plot <- to_plot[complete.cases(to_plot)]
-ggplot(to_plot[1:10,], aes(x = fractal, col = value)) +
+ggplot(to_plot, aes(x = fractal, col = value)) +
   geom_density() +
   xlim(1.14, 1.3) +
   scale_color_manual(values = palette_RdBu(16)) +
@@ -41,7 +42,7 @@ ggplot(to_plot, aes(x = fractal, col = value)) +
 
 basins[, area_quant := ordered(quantcut(area, 10), labels = seq(0.1, 1, 0.1)), by = 'level']
 
-to_plot <- melt(basins[, c(-1:-4)], id.vars = c('fractal', 'gc', 'vegetation', 
+to_plot <- melt(basins[, c(-1:-4)], id.vars = c('fractal', 'gc', 'vegetation', 'bas_type',
                                                 'lithology', 'area_quant', 'elevation'))
 to_plot <- to_plot[complete.cases(to_plot)]
 
@@ -49,7 +50,7 @@ ggplot(to_plot[variable == 'prcp'], aes(x = fractal, col = value)) +
   geom_density() +
   xlim(1.14, 1.3) +
   scale_color_manual(values = palette_RdBu(10)) +
-  facet_wrap(~vegetation) + 
+  facet_wrap(~bas_type) + 
   theme_light()
 
 ggplot(to_plot[variable == 'prcp'], aes(x = fractal, col = value)) +
