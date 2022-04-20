@@ -20,10 +20,6 @@ basin_ids <- foreach(region_count = 1:length(regions_all), .packages = c('data.t
 basin_feats <- readRDS(paste0(data_path, 'basin_feats.rds'))
 basin_feats <- merge(basin_ids, basin_feats, by = 'pfaf_id')
 
-cols <- c('elevation', 'slope', 'stream_grad', 
-          'prcp', 'aridity', 'clay_pc', 'silt_pc', 
-          'sand_pc', 'erosion')
-
 basin_atlas <- data.table()
 for(basin_level in basin_levels){
 
@@ -75,15 +71,27 @@ basin_atlas[silt_pc == -999, silt_pc := NA ]
 basin_atlas[sand_pc == -999, sand_pc := NA ]
 basin_atlas[lithology == 'nd', lithology := NA] 
 
+basin_atlas_feats <- merge(basin_feats, basin_atlas, by = 'hybas_id')
+basin_atlas_feats[, level := ordered(level)]
+#basin_atlas <- merge(basin_feats[, .(hybas_id, level)], basin_atlas, by = 'hybas_id')
 
-basins_atlas_feats <- merge(basin_feats, basin_atlas, by = 'hybas_id')
+cols <- c('elevation', 'slope', 'stream_grad', 
+          'prcp', 'aridity', 'clay_pc', 'silt_pc', 
+          'sand_pc', 'erosion')
 
-basin_atlas <- merge(basin_feats[, .(hybas_id, level)], basin_atlas, by = 'hybas_id')
-basin_atlas_quant <- basin_atlas[ , lapply(.SD, quantcut, 10), .SDcols = cols, by = 'level']
-basin_atlas_quant <- basin_atlas_quant[ , lapply(.SD, factor, labels = seq(0.1, 1, 0.1)), .SDcols = cols, by = 'level']
-basin_atlas_factors <- cbind(basin_atlas[, c(1, 3, 7, 15, 16)], basin_atlas_quant)
+basin_atlas_quant <- data.table()
+for(level_count in basin_levels){
+  basin_atlas_temp <- basin_atlas_feats[level == level_count, 
+                                        lapply(.SD, quantcut, 10), 
+                                        .SDcols = cols]
+  basin_atlas_temp <- basin_atlas_temp[, lapply(.SD, factor, labels = seq(0.1, 1, 0.1)), 
+                                        .SDcols = cols]
+  basin_atlas_temp <- cbind(basin_atlas_feats[level == level_count, 2], basin_atlas_temp)
+  basin_atlas_quant <- rbind(basin_atlas_quant, basin_atlas_temp)
+}
 
-basins_atlas_quant_feats <- merge(basin_feats, basin_atlas_factors, by = c('hybas_id', 'level'))
+basins_atlas_quant_feats <- merge(basin_atlas_feats[, c('pfaf_id', 'hybas_id', 'level', 'fractal', 'gc'), ], 
+                                  basin_atlas_quant, by = c('pfaf_id'))
 
 saveRDS(basins_atlas_quant_feats, paste0(data_path, 'basin_atlas_feats_qq.rds'))
 saveRDS(basins_atlas_feats, paste0(data_path, 'basin_atlas_feats.rds'))

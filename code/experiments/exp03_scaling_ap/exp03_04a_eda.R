@@ -6,7 +6,7 @@ library(gtools)
 basins <- readRDS(paste0(data_path, 'basin_atlas_feats.rds'))
 basins_qq <- readRDS(paste0(data_path, 'basin_atlas_feats_qq.rds'))
 
-to_plot <- melt(basins_qq[, c(-1:-5, -8:-12, -22)], id.vars = c('fractal', 'gc'))
+to_plot <- melt(basins_qq[level == 11, c(-1:-5, -8:-12, -22)], id.vars = c('fractal', 'gc'))
 to_plot <- to_plot[complete.cases(to_plot)]
 
 ggplot(to_plot, aes(x = fractal, col = value)) +
