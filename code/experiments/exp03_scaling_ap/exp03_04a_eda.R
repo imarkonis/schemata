@@ -6,7 +6,7 @@ library(gtools)
 basins <- readRDS(paste0(data_path, 'basin_atlas_feats.rds'))
 basins_qq <- readRDS(paste0(data_path, 'basin_atlas_feats_qq.rds'))
 
-to_plot <- melt(basins_qq[level == 11, c(-1:-5, -8:-12, -22)], id.vars = c('fractal', 'gc'))
+to_plot <- melt(basins_qq[, c(-1:-2)], id.vars = c('fractal', 'gc', 'level'))
 to_plot <- to_plot[complete.cases(to_plot)]
 
 ggplot(to_plot, aes(x = fractal, col = value)) +
@@ -20,6 +20,31 @@ ggsave()
 ggplot(to_plot, aes(x = gc, col = value)) +
   geom_density() +
   facet_wrap(~variable) + 
+  xlim(1.14, 1.3) +
+  scale_color_manual(values = palette_RdBu(10)) +
+  theme_light()
+
+ggplot(to_plot[variable == 'prcp'], aes(x = fractal, col = value)) +
+  geom_density() +
+  facet_wrap(~level) + 
+  xlim(1.14, 1.3) +
+  scale_color_manual(values = palette_RdBu(10)) +
+  theme_light()
+ggsave()
+
+to_plot <- melt(basins_qq[pfaf_id %in% basins[bas_type == 'sub-basin', pfaf_id], c(-1:-2)], id.vars = c('fractal', 'gc', 'level'))
+to_plot <- to_plot[complete.cases(to_plot)]
+
+ggplot(to_plot, aes(x = fractal, col = value)) +
+  geom_density() +
+  facet_wrap(~variable) + 
+  xlim(1.14, 1.3) +
+  scale_color_manual(values = palette_RdBu(10)) +
+  theme_light()
+
+ggplot(to_plot[variable == 'prcp'], aes(x = fractal, col = value)) +
+  geom_density() +
+  facet_wrap(~level, scales = 'free') + 
   xlim(1.14, 1.3) +
   scale_color_manual(values = palette_RdBu(10)) +
   theme_light()
