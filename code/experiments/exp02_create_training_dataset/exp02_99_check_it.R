@@ -1,6 +1,6 @@
-source('./code/source/experiments/exp_02.R')
-source('./code/source/libs.R')
-source('./code/source/geo_utils.R')
+source('code/source/experiments/exp_02.R')
+source('code/source/libs.R')
+source('code/source/geo_utils.R')
 library(png)
 
 data_source_path <- paste0("./data/experiments/", experiment, '/training/')

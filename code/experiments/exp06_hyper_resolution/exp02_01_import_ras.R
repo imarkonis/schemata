@@ -1,7 +1,7 @@
 #Import and preprocess dem
 
 source('code/source/libs.R')
-source('code/source/experiments/exp_02.R')
+source('code/source/experiments/exp_06.R')
 
 all_rasters <- list.dirs(paste0(data_loc, product), full.names = F)
 all_rasters <- unique(substr(all_rasters, 1, 7))
