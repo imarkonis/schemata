@@ -15,9 +15,6 @@ foreach(raster_count = 1:rasters_n, .packages = c('data.table', 'sf')) %dopar% {
   writeRaster(dem_raster, paste0("./data/dems_3s/dem_", all_rasters[raster_count], ".tif"), overwrite=TRUE)
 }
 
-
-
-
 #Validation plot
 
 plot(dem_raster)
