@@ -3,7 +3,8 @@ source('code/source/libs.R')
 source('code/source/geo_utils.R')
 library(stars)
 
-dir.create(paste0("./data/experiments/", experiment, '/dems'))
+save_path <- paste0("./data/experiments/", experiment, '/dems')
+dir.create(save_path)
 
 res <- 0.2
 
@@ -38,3 +39,7 @@ foreach(raster_count = 1:rasters_n, .packages = c('data.table', 'sf')) %dopar% {
     }
   }
 }
+
+files_dems <- list.files(save_path, full.names = TRUE)
+empty_rasters <- files_dems[sapply(files_dems, file.size) <= 15000]
+unlink(empty_rasters)
