@@ -29,7 +29,7 @@ for(i in 1:length(schema_tables_rivers$table_name)){
   test <- data.table(test)
   test[,L1:=NULL]
   print("saving")
-  saveRDS(test, paste0(data_path, '/',schema_tables_rivers$table_name[i],'_xy_all.rds'))
+  saveRDS(test, paste0(data_path, '/',schema_tables_rivers$table_name[i],'_xy.rds'))
   
 }
 

@@ -13,7 +13,7 @@ usern <- rstudioapi::askForPassword("Database user")
 passwordn <- rstudioapi::askForPassword("Database password")
 
 
-fnames <- list.files(path = data_path, pattern = "rivers_xy_all_3.rds")
+fnames <- list.files(path = data_path, pattern = "rivers_xy_dist.rds")
 
 for(i in fnames[4:9]){
   st <- readRDS(paste0(data_path,"/",i))

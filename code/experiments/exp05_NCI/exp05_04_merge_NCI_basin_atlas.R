@@ -14,7 +14,7 @@ basin_atlas_feats <- readRDS("data/experiments/exp03/basin_atlas_feats.rds")
 basin_atlas_feats_qq <- readRDS("data/experiments/exp03/basin_atlas_feats_qq.rds")
 
 for(i in 1:length(regions)){
-  river_NCI <- readRDS(paste0(results_path, '/',regions[i],'_NCI_sel.rds'))
+  river_NCI <- readRDS(paste0(data_path, '/',regions[i],'_NCI_sel.rds'))
   if(i == 1){
     basin_atlas_feats <- merge(basin_atlas_feats, river_NCI, by = "pfaf_id", all.x = TRUE)
     basin_atlas_feats_qq <- merge(basin_atlas_feats_qq, river_NCI, by = "pfaf_id", all.x = TRUE)

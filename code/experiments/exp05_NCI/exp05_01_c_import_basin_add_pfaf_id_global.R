@@ -15,7 +15,7 @@ con <- dbConnect(Postgres(), dbname = db_name, host = host_ip, port = port_n,
 regions <- c("af", "as", "na", "au", "eu", "si", "sa_n", "sa_s")
 
 for(i in 1:length(regions)){
-  river_xyz <- readRDS(paste0(data_path,'/z_',regions[i], '_rivers_xy_all_3.rds'))
+  river_xyz <- readRDS(paste0(data_path,'/z_',regions[i], '_rivers_xy_dist.rds'))
   river_xyz[,dist_up_km_detailed := dist_up_km + as.numeric(cum_dist)/1000]
   name_merge <- paste0(data_path,'/',regions[i], '_rivers_xyz_pfaf.rds')
   if( i %in% c(6)){

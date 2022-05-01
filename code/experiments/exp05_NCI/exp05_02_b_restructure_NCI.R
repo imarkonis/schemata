@@ -11,7 +11,7 @@ library(ggplot2)
 regions <- c("af", "as", "na", "au", "eu", "sa_n", "sa_s")
 
 for(i in 1:length(regions)){
-  river_NCI <- readRDS(paste0(data_path, '/',regions[i],'_NCI_pfaf_ids.rds'))
+  river_NCI <- readRDS(paste0(data_path, '/',regions[i],'_NCI.rds'))
   
   river_NCI_sel <- subset(river_NCI, select = c(NCI_12, 
                                                 NCI_11, 

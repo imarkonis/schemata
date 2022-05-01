@@ -88,10 +88,10 @@ for(i in 1:length(regions)){
   }
   river_xyz[,most_sub_basin_level := nchar(sub("0+$", "", pfaf_id))]
   river_xyz[,diff_levels := most_sub_basin_level -main_riv_level]
-  saveRDS(river_xyz, paste0(results_path, '/',regions[i],'_NCI_pfaf_ids.rds'))
+  saveRDS(river_xyz, paste0(results_path, '/',regions[i],'_NCI_dist.rds'))
   print(regions[i])
   print(river_xyz[diff_levels < 0,length(unique(main_riv))])
-  saveRDS(river_xyz[diff_levels < 0], paste0(data_path, '/',regions[i],'_NCI_pfaf_ids_wrong_pfaf_id_l12.rds'))
+  saveRDS(river_xyz[diff_levels < 0], paste0(data_path, '/',regions[i],'_NCI_dist_pfaf_ids_wrong_pfaf_id_l12.rds'))
 }
 
 
