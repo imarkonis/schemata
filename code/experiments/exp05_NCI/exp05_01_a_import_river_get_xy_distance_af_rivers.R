@@ -18,15 +18,13 @@ schema_tables_rivers <- dbGetQuery(con, "SELECT table_name FROM information_sche
 
 i <- 2
 print(schema_tables_rivers$table_name[i])
-query_riv_allinfo <- paste0("SELECT * FROM river_atlas.", schema_tables_rivers$table_name[i])
+query_riv_allinfo <- paste0("SELECT gid, hybas_l12, hyriv_id, main_riv, next_down, length_km, dist_dn_km, dist_up_km, ord_clas, geom FROM river_atlas.", schema_tables_rivers$table_name[i])
 region_rivall <- st_read(con, query = query_riv_allinfo)
 crs_region <- st_crs(region_rivall$geom[1])
 coords <- st_coordinates(region_rivall)
-region_sub <- subset(region_rivall,select = c("gid", "hybas_l12", "hyriv_id", "main_riv", "next_down", "length_km", "dist_dn_km", "dist_up_km", "ord_clas"))
+region_rivall <- st_drop_geometry(region_rivall)
+region_dt <- data.table(region_rivall)
 rm(region_rivall)
-region_sub <- st_drop_geometry(region_sub)
-region_dt <- data.table(region_sub)
-rm(region_sub)
 coords_dt <- data.table(coords)
 rm(coords)
 coords_dt[,X2:= data.table::shift(X, n = 1, type = "lag", fill = X[1]), by = L2]

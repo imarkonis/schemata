@@ -18,14 +18,12 @@ schema_tables_rivers <- dbGetQuery(con, "SELECT table_name FROM information_sche
 
 for(i in 1:length(schema_tables_rivers$table_name)){
   print(schema_tables_rivers$table_name[i])
-  query_riv_allinfo <- paste0("SELECT * FROM river_atlas.", schema_tables_rivers$table_name[i])
+  query_riv_allinfo <- paste0("SELECT gid, hybas_l12, hyriv_id, main_riv, next_down, length_km, dist_dn_km, dist_up_km, ord_clas, geom FROM river_atlas.", schema_tables_rivers$table_name[i])
   region_rivall <- st_read(con, query = query_riv_allinfo)
   coords <- st_coordinates(region_rivall)
   print("got coords")
-  region_sub <- subset(region_rivall,select = c("gid", "hybas_l12", "hyriv_id", "main_riv", "next_down", "length_km", "dist_dn_km", "dist_up_km", "ord_clas"))
-  rm(region_rivall)
-  region_sub <- st_drop_geometry(region_sub)
-  test <- merge(region_sub, coords, by.x = "gid", by.y = "L2", all.y = T)
+  region_rivall <- st_drop_geometry(region_rivall)
+  test <- merge(region_rivall, coords, by.x = "gid", by.y = "L2", all.y = T)
   test <- data.table(test)
   test[,L1:=NULL]
   print("saving")
