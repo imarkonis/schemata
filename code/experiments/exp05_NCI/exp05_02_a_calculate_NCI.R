@@ -19,15 +19,18 @@ for(i in 1:length(regions)){
   river_dt[, z_av := mean(z, na.rm = T), .(hyriv_id)]
   river_xyz_av <- river_dt[!(duplicated(hyriv_id)),]
   river_xyz_av[, segments_count := nrow(.SD), .(main_riv)]
+  print(regions[i])
+  print(river_xyz_av[,length(unique(pfaf_id))])
   river_xyz_av <- river_xyz_av[segments_count > 1]
   river_xyz_av <- river_xyz_av[coast != 1]
   river_xyz_av[,coast := NULL]
-  # zmin is where min z of next_down == 0
   river_xyz_av[, OK := FALSE]
   river_xyz_av[, zerotest := FALSE]
   river_xyz_av[as.integer(substr(pfaf_id, pfaf_level, pfaf_level)) == 0, zerotest := TRUE]
   river_xyz_av[((pfaf_id%%2) == 0) &  (!zerotest) , OK:= TRUE ]
   river_xyz_av[, lowest_ord_clas := min(ord_clas), .(pfaf_id)]
+  # zmin is where min z of next_down == 0
+
   river_xyz_av[(ord_clas == lowest_ord_clas) & OK, zmin := min(z_av[which.min(next_down)]), .(pfaf_id)]
   # zmax is where z where max(dist_up_km)
   river_xyz_av[(ord_clas == lowest_ord_clas) & OK, zmax := max(z_av[which.max(dist_dn_km)]), .(pfaf_id)]
@@ -47,6 +50,7 @@ for(i in 1:length(regions)){
   river_xyz_av[,most_sub_basin_level := nchar(sub("0+$", "", pfaf_id))]
   river_xyz_av[,diff_levels := most_sub_basin_level -main_riv_level]
   for(pfaf_level in 11:3){
+      print(pfaf_level)
       river_xyz_av[,pfaf_id_level:=  as.numeric(substr(pfaf_id, 1, pfaf_level))]
       river_xyz_av[, OK := FALSE]
       river_xyz_av[, zerotest := FALSE]
@@ -56,7 +60,6 @@ for(i in 1:length(regions)){
       if(pfaf_level == 3){
         river_xyz_av[, OK:= TRUE]
       }
-      
       river_xyz_av[, lowest_ord_clas := min(ord_clas), .(pfaf_id_level)]
       river_xyz_av[(ord_clas == lowest_ord_clas) & OK, zmin := min(z_av[which.min(next_down)]), .(pfaf_id_level)]
       # zmax is where z where max(dist_up_km)
@@ -78,32 +81,8 @@ for(i in 1:length(regions)){
   }
   river_xyz_av[,most_sub_basin_level := nchar(sub("0+$", "", pfaf_id))]
   river_xyz_av[,diff_levels := most_sub_basin_level -main_riv_level]
-  saveRDS(river_xyz_av, paste0(results_path, '/',regions[i],'_NCI_pfaf_ids.rds'))
-  print(regions[i])
-  print(river_xyz_av[diff_levels < 0,length(unique(main_riv))])
-  saveRDS(river_xyz_av[diff_levels < 0], paste0(results_path, '/',regions[i],'_NCI_pfaf_ids_wrong_pfaf_id_l12.rds'))
+  saveRDS(river_xyz_av, paste0(data_path, '/',regions[i],'_NCI.rds'))
+  saveRDS(river_xyz_av[diff_levels < 0], paste0(data_path, '/',regions[i],'_NCI_pfaf_ids_wrong_pfaf_id_l12.rds'))
 }
-
-
-library(ggplot2)
-river_sel <- river_xyz_av[,.(main_riv_level= min(main_riv_level), sub_riv_level = max(most_sub_basin_level)), main_riv]
-
-river_sel[, diff:= sub_riv_level - main_riv_level]
-cols <- c("main" = "darkblue", "sub" = "lightblue")
-
-ggplot(data = river_sel)+
-  geom_histogram(aes(x = main_riv_level, fill = "main"), stat = "count")+
-  geom_histogram(aes(x = sub_riv_level, fill = "sub"), stat = "count")+
-  scale_fill_manual(values = cols)+
-  labs(x = "pfafstetter level")+
-  theme_bw() 
-
-ggplot(data = river_sel[diff != 0 ])+
-  geom_histogram(aes(x = main_riv_level, fill = "main"), stat = "count")+
-  geom_histogram(aes(x = sub_riv_level, fill = "sub", color = "sub"), stat = "count", alpha = 0.5)+
-  scale_fill_manual(values = cols)+
-  scale_color_manual(values = cols)+
-  labs(x = "pfafstetter level")+
-  theme_bw()  
 
 

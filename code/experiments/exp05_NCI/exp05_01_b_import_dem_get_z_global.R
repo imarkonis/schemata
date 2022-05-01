@@ -13,33 +13,33 @@ usern <- rstudioapi::askForPassword("Database user")
 passwordn <- rstudioapi::askForPassword("Database password")
 
 
-fnames <- list.files(path = data_path, pattern = "rivers_xy_dist.rds")
+fnames <- list.files(path = data_path, pattern = "rivers_xy.rds")
 
-for(i in fnames[4:9]){
+for(i in fnames){
   st <- readRDS(paste0(data_path,"/",i))
   print(paste("read", i))
-  if(i == "na_rivers_xy_all_3.rds"){
+  if(i == "na_rivers_xy.rds"){
     dem_select <- c("na_dem_15s_grid", "ca_dem_15s_grid")
   }
-  if(i == "af_rivers_xy_all_3.rds"){
+  if(i == "af_rivers_xy.rds"){
     dem_select <- c("af_dem_15s_grid")
   }
-  if(i == "as_rivers_xy_all_3.rds"){
+  if(i == "as_rivers_xy.rds"){
     dem_select <- c("as_dem_15s_grid", "eu_dem_15s_grid")
   }
-  if(i == "au_rivers_xy_all_3.rds"){
+  if(i == "au_rivers_xy.rds"){
     dem_select <- c("au_dem_15s_grid", "as_dem_15s_grid")
   }
-  if(i == "eu_rivers_xy_all_3.rds"){
+  if(i == "eu_rivers_xy.rds"){
     dem_select <- c("eu_dem_15s_grid", "as_dem_15s_grid")
   }
-  if(i == "sa_n_rivers_xy_all_3.rds"){
+  if(i == "sa_n_rivers_xy.rds"){
     dem_select <- c("sa_dem_15s_grid", "ca_dem_15s_grid")
   }
-  if(i == "sa_s_rivers_xy_all_3.rds"){
+  if(i == "sa_s_rivers_xy.rds"){
     dem_select <- c("sa_dem_15s_grid", "ca_dem_15s_grid")
   }
-  if(i == "si_rivers_xy_all_3.rds"){
+  if(i == "si_rivers_xy.rds"){
     dem_select <- c("as_dem_15s_grid", "eu_dem_15s_grid")
   }
   

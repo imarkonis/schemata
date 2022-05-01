@@ -35,7 +35,8 @@ coords_dt[,cum_dist:= cumsum(distance), L2]
 print("got coords")
 test <- merge(region_dt, coords_dt, by.x = "gid", by.y = "L2", all.y = T)
 test <- data.table(test)
-test[,L1:=NULL]
+test[, dist_up_km_detailed := dist_up_km + as.numeric(cum_dist)/1000]
+test[, L1:=NULL]
 test[, X2:= NULL]
 test[, Y2:= NULL]
 print("saving")

@@ -11,7 +11,7 @@ regions <- c("af", "as", "na", "au", "eu", "sa_n", "sa_s")
 
 # add basin, sub-basin, interbasin, closed, region, 
 for(i in 1:length(regions)){
-  river_xyz <- readRDS(paste0(data_path,'/',regions[i], '_rivers_xyz_pfaf.rds'))
+  river_xyz <- readRDS(paste0(data_path,'/',regions[i], '_rivers_xyz_pfaf_distance.rds'))
   river_xyz$geom = NULL
   river_xyz <- as.data.table(river_xyz)
   # think about this?

@@ -32,4 +32,14 @@ for(i in 1:length(schema_tables_rivers$table_name)){
 }
 
 
+schema_tables_rivers <- dbGetQuery(con, "SELECT table_name FROM information_schema.tables WHERE table_schema = 'river_atlas'") 
+
+n <- 0
+for(i in 1:length(schema_tables_rivers$table_name)){
+  tmp <- dbGetQuery(con, paste0("SELECT COUNT(DISTINCT hybas_l12) FROM river_atlas.", schema_tables_rivers$table_name[i]))
+  n <- n + tmp
+  print(paste(schema_tables_rivers$table_name[i]))
+  print(tmp)
+}
+
 

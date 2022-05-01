@@ -1,9 +1,5 @@
 
 source('code/source/libs.R')
-source('code/source/functions.R')
-source('code/source/geo_utils.R')
-source('code/source/database.R')
-source('code/source/geo_functions.R')
 source('code/source/experiments/exp_05.R')
 
 library(ggplot2)
@@ -60,6 +56,8 @@ for(i in 1:length(regions)){
   old_names <- c("pfaf_id_NCI")
   new_names <- c("pfaf_id")
   setnames(river_NCI_long_unique, old_names, new_names)
+  river_NCI_notna <- river_NCI_long_unique[!is.na(NCI)]
+  saveRDS(river_NCI_notna, paste0(data_path, '/',regions[i],'_NCI_notna_sel.rds'))
   saveRDS(river_NCI_long_unique, paste0(data_path, '/',regions[i],'_NCI_sel.rds'))
   
 }
