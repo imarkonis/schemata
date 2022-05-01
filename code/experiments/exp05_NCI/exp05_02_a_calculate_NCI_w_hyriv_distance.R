@@ -64,10 +64,6 @@ for(i in 1:length(regions)){
     if(pfaf_level == 3){
       river_xyz[, OK:= TRUE]
     }
-    #zero_pfaf <- river_xyz[zerotest == T, as.numeric(substr(pfaf_id, 1, pfaf_level-1))]
-    #check_pfaf <- paste0(zero_pfaf, 1:9)
-    #any pfaf_id %in% check_pfaf
-    # OR which(pfaf_id %in% check_pfaf)
     
     river_xyz[, lowest_ord_clas := min(ord_clas), .(pfaf_id_level)]
     river_xyz[(ord_clas == lowest_ord_clas) & OK, zmin := min(z[which.min(next_down)]), .(pfaf_id_level)]
@@ -95,7 +91,7 @@ for(i in 1:length(regions)){
   saveRDS(river_xyz, paste0(results_path, '/',regions[i],'_NCI_pfaf_ids.rds'))
   print(regions[i])
   print(river_xyz[diff_levels < 0,length(unique(main_riv))])
-  saveRDS(river_xyz[diff_levels < 0], paste0(results_path, '/',regions[i],'_NCI_pfaf_ids_wrong_pfaf_id_l12.rds'))
+  saveRDS(river_xyz[diff_levels < 0], paste0(data_path, '/',regions[i],'_NCI_pfaf_ids_wrong_pfaf_id_l12.rds'))
 }
 
 
