@@ -1,6 +1,6 @@
 library(doParallel)
 
-experiment <- 'exp02'
+experiment <- 'exp06'
 
 # Database
 

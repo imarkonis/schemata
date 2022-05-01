@@ -3,6 +3,7 @@
 results_path <- paste0('./results/database/')
 data_path <- paste0('./data/database/')
 basin_dem_path <- "./data/raw/hydrosheds/hydrosheds_dem/dem_15s_grid/eu_dem_15s/"
+basin_shp_path <- "./data/raw/hydrosheds/hydrobasins/"
 river_shp_path <- "./data/raw/hydrosheds/hydroatlas/RiverATLAS_Data_v10_shp/"
 
 if(!dir.exists(results_path)) {dir.create(paste0('./results/database/'))}
@@ -21,6 +22,9 @@ cores_n <- detectCores()
 registerDoParallel(cores = cores_n - 1)
 
 # Constants
+
+regions_all <- list.dirs(basin_shp_path, full.names = FALSE)[-1]
+basin_levels <- 3:11 # Levels 1 and 2 correspond to continents/country borders/Level 12 is almost identical to level 11
 
 #Area coordinates and basin size for testing  
 #Lon 42-47E, Lat 25-65N, Basin Area: 100 - 200 km2

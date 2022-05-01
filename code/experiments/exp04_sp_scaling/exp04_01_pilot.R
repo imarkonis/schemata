@@ -21,7 +21,7 @@ basin <- st_read(con, query = paste0("SELECT * FROM basin_boundaries.",
 
 basin <- merge(basin, basin_atlas_feats, by = c('pfaf_id', 'hybas_id', 'coast'))
 
-to_plot <- basin[basin$level == 6, ]
+to_plot <- basin[basin$level == 3, ]
 ggplot(to_plot) +
   geom_sf(fill = as.numeric(to_plot$climate)) +
   theme_light()
