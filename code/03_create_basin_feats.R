@@ -44,3 +44,7 @@ basin_feats <- foreach(basin_count = 1:length(regions_all), .packages = c('data.
                        }
 
 saveRDS(basin_feats, paste0(data_path, 'basin_feats.rds'))
+
+# Validate
+basin_feats <- readRDS(paste0(data_path, 'basin_feats.rds'))
+
