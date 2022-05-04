@@ -2,12 +2,7 @@ source('code/source/libs.R')
 source('code/source/database.R')
 source('code/source/geo_functions.R')
 
-
 library(sf)
-
-con <- dbConnect(Postgres(), dbname = db_name, host = host_ip, port = port_n,         
-                 user = rstudioapi::askForPassword("Database user"),      
-                 password = rstudioapi::askForPassword("Database password"))
 
 regions_n <- length(regions_all)
 
@@ -35,15 +30,14 @@ for(region_count in 1:regions_n){
                                                      nchar(as.numeric(pfaf_id))) != 0, bas_type := factor("sub-basin")] 
   basins[as.numeric(pfaf_id) %% 2 == 1, bas_type := factor("interbasin")] 
   basins <- unique(basins[complete.cases(basins)])
-  saveRDS(basins, paste0(data_path, 'basin_feats_', regions_all[region_count], '.rds'))
+  saveRDS(basins, paste0(data_path, 'basin_feats/basin_feats_', regions_all[region_count], '.rds'))
   rm(basins); gc()
 }
 
 basin_feats <- foreach(basin_count = 1:regions_n, .packages = c('data.table'), 
                        .combine = 'rbind') %do% {
-                         readRDS(paste0(data_path, 'basin_feats_', regions_all[basin_count], '.rds'))
+                         readRDS(paste0(data_path, 'basin_feats/basin_feats_', regions_all[basin_count], '.rds'))
                        }
-
 saveRDS(basin_feats, paste0(data_path, 'basin_feats.rds'))
 
 # Validate

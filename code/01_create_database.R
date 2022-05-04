@@ -10,10 +10,6 @@ min_bas_level <- min(basin_levels)
 max_bas_level <- max(basin_levels)
 regions_n <- length(regions_all)
   
-con <- dbConnect(Postgres(), dbname = db_name, host = host_ip, port = port_n,        
-                 user = rstudioapi::askForPassword("Database user"),      
-                 password = rstudioapi::askForPassword("Database password"))
-
 for(region_count in 1:regions_n){
   for(basin_level in min_bas_level:max_bas_level){
     basin_tables[basin_level - 2] <- paste0(regions_all[region_count], "_", basin_level)

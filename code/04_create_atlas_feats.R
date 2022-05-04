@@ -78,8 +78,8 @@ for(level_count in basin_levels){
   basin_atlas_quant <- rbind(basin_atlas_quant, basin_atlas_temp)
 }
 
-basins_atlas_quant_feats <- merge(basin_atlas_feats[, c('pfaf_id', 'hybas_id', 'level', 'fractal', 'gc'), ], 
+basin_atlas_quant_feats <- merge(basin_atlas_feats[, c('pfaf_id', 'hybas_id', 'level', 'fractal', 'gc'), ], 
                                   basin_atlas_quant, by = c('pfaf_id'))
 
-saveRDS(basins_atlas_quant_feats, paste0(data_path, 'basin_atlas_feats_qq.rds'))
-saveRDS(basins_atlas_feats, paste0(data_path, 'basin_atlas_feats.rds'))
+saveRDS(basin_atlas_quant_feats, paste0(data_path, 'basin_atlas_feats_qq.rds'))
+saveRDS(basin_atlas_feats, paste0(data_path, 'basin_atlas_feats.rds'))

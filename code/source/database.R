@@ -16,6 +16,10 @@ db_schema <- 'basin_boundaries'
 host_ip <- '127.0.0.1' 
 port_n <- '5432'
 
+con <- dbConnect(Postgres(), dbname = db_name, host = host_ip, port = port_n,        
+                 user = rstudioapi::askForPassword("Database user"),      
+                 password = rstudioapi::askForPassword("Database password"))
+
 # Parallel computing
 
 cores_n <- detectCores()
@@ -25,13 +29,3 @@ registerDoParallel(cores = cores_n - 4)
 
 regions_all <- list.dirs(basin_shp_path, full.names = FALSE)[-1]
 basin_levels <- 3:11 # Levels 1 and 2 correspond to continents/country borders/Level 12 is almost identical to level 11
-
-#Area coordinates and basin size for testing  
-#Lon 42-47E, Lat 25-65N, Basin Area: 100 - 200 km2
-
-AREA_MIN <- 100
-AREA_MAX <- 200
-LON_MIN <- 42 
-LON_MAX <- 45 
-LAT_MIN <- 52 
-LAT_MAX <- 55 
