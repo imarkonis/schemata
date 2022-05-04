@@ -23,7 +23,7 @@ registerDoParallel(cores = cores_n - 4)
 
 # Constants
 
-regions <- list.dirs(basin_shp_path, full.names = FALSE)[-1]
+regions_all <- list.dirs(basin_shp_path, full.names = FALSE)[-1]
 basin_levels <- 3:11 # Levels 1 and 2 correspond to continents/country borders/Level 12 is almost identical to level 11
 
 #Area coordinates and basin size for testing  

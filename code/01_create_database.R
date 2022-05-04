@@ -8,7 +8,7 @@ library(dbplyr)
 basin_tables <- vector()
 min_bas_level <- min(basin_levels)
 max_bas_level <- max(basin_levels)
-regions_n <- length(regions)
+regions_n <- length(regions_all)
   
 con <- dbConnect(Postgres(), dbname = db_name, host = host_ip, port = port_n,        
                  user = rstudioapi::askForPassword("Database user"),      
@@ -16,7 +16,7 @@ con <- dbConnect(Postgres(), dbname = db_name, host = host_ip, port = port_n,
 
 for(region_count in 1:regions_n){
   for(basin_level in min_bas_level:max_bas_level){
-    basin_tables[basin_level - 2] <- paste0(regions[region_count], "_", basin_level)
+    basin_tables[basin_level - 2] <- paste0(regions_all[region_count], "_", basin_level)
   }
   region_all <- st_read(con, query = paste0("SELECT * FROM ", db_schema, ".", basin_tables[1]))
   region_all$pfaf_id <- as.character(region_all$pfaf_id)
@@ -26,9 +26,9 @@ for(region_count in 1:regions_n){
     region_all <- bind_rows(region_all, region)
     print(basin_tables[bas_count])
   }
-    table_name <- paste0(regions[region_count], '_all')
+    table_name <- paste0(regions_all[region_count], '_all')
   write_sf(region_all, con, Id(schema = db_schema, table = table_name))
-  table_name <- paste0(regions[region_count], '_basins')
+  table_name <- paste0(regions_all[region_count], '_basins')
   write_sf(region_all["pfaf_id"], con, Id(schema = db_schema, table = table_name))
 }
 #Validation plots

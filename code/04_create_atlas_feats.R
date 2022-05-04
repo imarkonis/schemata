@@ -1,9 +1,7 @@
 source('code/source/libs.R')
-source('code/source/geo_functions.R')
 source('code/source/database.R')
+source('code/source/geo_functions.R')
 
-library(RPostgres)
-library(sf)
 library(gtools)
 
 basin_ids <- readRDS(paste0(data_path, 'db_ids.rds'))
