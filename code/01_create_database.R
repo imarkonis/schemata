@@ -1,13 +1,13 @@
 source('code/source/libs.R')
-source('code/source/experiments/exp_01.R')
+source('code/source/database.R')
 
-library(RPostgres)
+
 library(dplyr)
 library(dbplyr)
 
 basin_tables <- vector()
-max_bas_level <- 11
-regions <- list.dirs('./data/raw/hydrosheds/hydrobasins', full.names = FALSE)[-1]
+min_bas_level <- min(basin_levels)
+max_bas_level <- max(basin_levels)
 regions_n <- length(regions)
   
 con <- dbConnect(Postgres(), dbname = db_name, host = host_ip, port = port_n,        
@@ -15,12 +15,12 @@ con <- dbConnect(Postgres(), dbname = db_name, host = host_ip, port = port_n,
                  password = rstudioapi::askForPassword("Database password"))
 
 for(region_count in 1:regions_n){
-  for(basin_level in 3:max_bas_level){
+  for(basin_level in min_bas_level:max_bas_level){
     basin_tables[basin_level - 2] <- paste0(regions[region_count], "_", basin_level)
   }
   region_all <- st_read(con, query = paste0("SELECT * FROM ", db_schema, ".", basin_tables[1]))
   region_all$pfaf_id <- as.character(region_all$pfaf_id)
-  for(bas_count in 2:length(basin_tables)){
+  for(bas_count in 1:length(basin_tables)){
     region <- st_read(con, query = paste0("SELECT * FROM ", db_schema, ".", basin_tables[bas_count]))
     region$pfaf_id <- as.character(region$pfaf_id)
     region_all <- bind_rows(region_all, region)
