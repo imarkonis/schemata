@@ -1,15 +1,12 @@
 source('code/source/libs.R')
+source('code/source/database.R')
 source('code/source/geo_functions.R')
-source('code/source/experiments/exp_03.R')
 
-library(RPostgres)
 library(sf)
 
-con <- dbConnect(Postgres(), dbname = db_name, host = host_ip, port = port_n,         
-                 user = rstudioapi::askForPassword("Database user"),      
-                 password = rstudioapi::askForPassword("Database password"))
+regions_n <- length(regions_all)
 
-for(region_count in 1:length(regions_all)){
+for(region_count in 1:regions_n){
   print(regions_all[region_count])
   
   bas_borders <- st_read(con, query = paste0("SELECT * FROM basin_boundaries.", regions_all[region_count], "_all"))
@@ -24,23 +21,25 @@ for(region_count in 1:length(regions_all)){
                                  area = as.numeric(st_area(basin)),
                                  perimeter = as.numeric(st_length(basin_line)))
                     }
-  basin_feats[, gc := gc_coef(perimeter, area)]
-  basin_feats[, fractal := fractal_dim(perimeter, area)]
   basins <- unique(basins[complete.cases(basins)])
-  
-  basin_feats[, bas_type := factor("closed")] 
-  basin_feats[as.numeric(pfaf_id) %% 2 == 0 & substr(as.numeric(pfaf_id), 
+  basins[, gc := gc_coef(perimeter, area)]
+  basins[, fractal := fractal_dim(perimeter, area)]
+  basins[, bas_type := factor("closed")] 
+  basins[as.numeric(pfaf_id) %% 2 == 0 & substr(as.numeric(pfaf_id), 
                                                      nchar(as.numeric(pfaf_id)), 
                                                      nchar(as.numeric(pfaf_id))) != 0, bas_type := factor("sub-basin")] 
-  basin_feats[as.numeric(pfaf_id) %% 2 == 1, bas_type := factor("interbasin")] 
-  
-  saveRDS(basins, paste0(data_path, 'basin_feats_', regions_all[region_count], '.rds'))
+  basins[as.numeric(pfaf_id) %% 2 == 1, bas_type := factor("interbasin")] 
+  basins <- unique(basins[complete.cases(basins)])
+  saveRDS(basins, paste0(data_path, 'basin_feats/basin_feats_', regions_all[region_count], '.rds'))
   rm(basins); gc()
 }
 
-basin_feats <- foreach(basin_count = 1:length(regions_all), .packages = c('data.table'), 
+basin_feats <- foreach(basin_count = 1:regions_n, .packages = c('data.table'), 
                        .combine = 'rbind') %do% {
-                         readRDS(paste0(data_path, 'basin_feats_', regions_all[basin_count], '.rds'))
+                         readRDS(paste0(data_path, 'basin_feats/basin_feats_', regions_all[basin_count], '.rds'))
                        }
-
 saveRDS(basin_feats, paste0(data_path, 'basin_feats.rds'))
+
+# Validate
+basin_feats <- readRDS(paste0(data_path, 'basin_feats.rds'))
+

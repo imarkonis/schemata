@@ -4,12 +4,12 @@ options(repos='http://cran.rstudio.org')
 have_packages <- installed.packages()
 cran_packages <- c('remotes',  'data.table', 'tidyverse', 'dbplyr', 'foreach', 'parallel', 'doParallel',
                    'sf', 'sfc', 'rgdal', 'lwgeom', 'rasterdiv',
-                   'RPostgres', 'rpostgis', 'googledrive', 'rgee',
+                   'RPostgres', 'rpostgis', 
                    'kohonen', 'randomForest', 'tree', 'parallelSVM', 'spatialEco')
 to_install <- setdiff(cran_packages, have_packages[, 1])
-if(length(to_install)>0) install.packages(to_install)
+if(length(to_install) > 0) install.packages(to_install)
 
-remotes::install_github("r-spatial/rgee")
+#remotes::install_github("r-spatial/rgee")
 
 dir.create('./data')
 dir.create('./data/raw') #read-only original data
