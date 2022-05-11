@@ -69,3 +69,67 @@ plot.catchment <- function(object) {
     labs(x = "", y = "") +
     theme_light()
 }
+
+
+CreateSegment <- function(coords, from, to) {
+  distance <- 0
+  coordsOut <- c()
+  biggerThanFrom <- F
+  for (i in 1:(nrow(coords) - 1)) {
+    d <- sqrt((coords[i, 1] - coords[i + 1, 1])^2 + (coords[i, 2] - coords[i + 
+                                                                             1, 2])^2)
+    distance <- distance + d
+    if (!biggerThanFrom && (distance > from)) {
+      w <- 1 - (distance - from)/d
+      x <- coords[i, 1] + w * (coords[i + 1, 1] - coords[i, 1])
+      y <- coords[i, 2] + w * (coords[i + 1, 2] - coords[i, 2])
+      coordsOut <- rbind(coordsOut, c(x, y))
+      biggerThanFrom <- T
+    }
+    if (biggerThanFrom) {
+      if (distance > to) {
+        w <- 1 - (distance - to)/d
+        x <- coords[i, 1] + w * (coords[i + 1, 1] - coords[i, 1])
+        y <- coords[i, 2] + w * (coords[i + 1, 2] - coords[i, 2])
+        coordsOut <- rbind(coordsOut, c(x, y))
+        break
+      }
+      coordsOut <- rbind(coordsOut, c(coords[i + 1, 1], coords[i + 1, 
+                                                               2]))
+    }
+  }
+  if(nrow(coordsOut) > 2){
+    coordsOut <- coordsOut[c(1,3),]
+  }
+  return(coordsOut)
+}
+
+
+CreateSegments_coords <- function(coords, length = 0, n.parts = 0) {
+  stopifnot((length > 0 || n.parts > 0))
+  # calculate total length line
+  total_length <- 0
+  for (i in 1:(nrow(coords) - 1)) {
+    d <- sqrt((coords[i, 1] - coords[i + 1, 1])^2 + (coords[i, 2] - coords[i + 
+                                                                             1, 2])^2)
+    total_length <- total_length + d
+  }
+  # calculate stationing of segments
+  if (length > 0) {
+    stationing <- c(seq(from = 0, to = total_length, by = length), total_length)
+  } else {
+    stationing <- c(seq(from = 0, to = total_length, length.out = n.parts+1))
+  }
+  
+  # calculate segments and store the in list
+  
+  for (i in 1:(length(stationing) - 1)) {
+    if (i == 1){
+      newlines <- CreateSegment(coords, stationing[i], stationing[i + 1])
+    }else{
+      tmp <- CreateSegment(coords, stationing[i], stationing[i + 1])
+      newlines <- rbind(newlines, tmp)
+    }
+  }
+  return(as.data.frame(unique(newlines)))
+}
