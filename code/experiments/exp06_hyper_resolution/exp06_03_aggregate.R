@@ -15,7 +15,7 @@ dem_files_png <- list.files(data_source_path, pattern = "*dem.png")
 pal <- colorRampPalette(c("white", "black"))
 
 length(dem_files_png)
-foreach(file_count = 50001:length(dem_files_png), .packages = c('data.table', 'sf', 'png')) %dopar% {
+foreach(file_count = 1:length(dem_files_png), .packages = c('data.table', 'sf', 'png')) %dopar% {
   dem_raster <- raster(paste0(data_source_path, dem_files_png[file_count]))
 
   png(paste0(data_save_path, 'scale_1/', dem_files_png[file_count]))
