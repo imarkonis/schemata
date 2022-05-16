@@ -15,6 +15,11 @@ for(i in 1:length(schema_tables_rivers$table_name)){
   query_riv_allinfo <- paste0("SELECT gid, hybas_l12, hyriv_id, main_riv, next_down, length_km, dist_dn_km, dist_up_km, ord_clas, geom FROM river_atlas.", schema_tables_rivers$table_name[i])
   region_rivall <- st_read(con, query = query_riv_allinfo)
   crs_region <- st_crs(region_rivall$geom[1])
+  if(R.Version()$major > 3){
+    crs_in <- crs_region$input
+  }else{
+    crs_in <- crs_region$epsg
+  }
   coords <- st_coordinates(region_rivall)
   region_rivall <- st_drop_geometry(region_rivall)
   region_dt <- data.table(region_rivall)
@@ -28,7 +33,7 @@ for(i in 1:length(schema_tables_rivers$table_name)){
   coords_dt[, X2 := data.table::shift(X, n = 1, type = "lag", fill = X[1]), by = L2]
   coords_dt[, Y2 := data.table::shift(Y, n = 1, type = "lag", fill = Y[1]), by = L2]
   coords_dt$id <- 1:nrow(coords_dt)
-  coords_dt[, distance := st_distance(st_sfc(st_point(x= c(.SD$X,.SD$Y)), crs = crs_region$input),st_sfc(st_point(x= c(.SD$X2,.SD$Y2)), crs = crs_region$input), by_element = T),id]
+  coords_dt[, distance := st_distance(st_sfc(st_point(x= c(.SD$X,.SD$Y)), crs = crs_in),st_sfc(st_point(x= c(.SD$X2,.SD$Y2)), crs = crs_in), by_element = T),id]
   coords_dt[, cum_dist := cumsum(distance), L2]
   coords_dt[, cum_dist_v2 := rev(cum_dist) , L2]  
   print("got coords")
