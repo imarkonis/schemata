@@ -19,21 +19,19 @@ horton_form <- function(length, area){
 }
 
 #Normalized Concavity Index
-NCI <- function(z_s, z_l, z_min, z_max){
-  return((z_s-z_l)/(z_max- z_min))
+vert_deviation <- function(z_s, z_l, zend, zbeg){
+  # z_l is actual z at location l
+  # z_s is z on the straight line
+  return((z_l-z_s)/(zbeg- zend))
 }
 
 #elevation if river was a straight line
-z_straight <- function(l_distance,m_straight, z_min){
-  return(m_straight*l_distance+z_min)
+z_straight <- function(l_distance,m_straight, zbeg){
+  return(m_straight*l_distance+zbeg)
 }
 
-#distance from min
-l_distance <- function(x_min,y_min,x_l,y_l){
-  return(sqrt((x_min-x_l)^2+(y_min-y_l)^2))
-}
 
 # slope of straight line
-m_straight <- function(z_min,z_max,l){
-    return((z_max-z_min)/l)
+m_straight <- function(zend,zbeg,l){
+    return((zend-zbeg)/l)
 }
