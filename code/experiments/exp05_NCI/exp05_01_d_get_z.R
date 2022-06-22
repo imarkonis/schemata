@@ -1,48 +1,43 @@
-
 source('code/source/libs.R')
-source('code/source/functions.R')
-source('code/source/geo_utils.R')
 source('code/source/database.R')
-source('code/source/geo_functions.R')
 source('code/source/experiments/exp_05.R')
+library('rgdal')
+options(scipen = 15)
+regions <- c("af", "as", "na", "au", "eu", "sa_n", "sa_s", "si")
 
-library(rgdal)
-usern <- rstudioapi::askForPassword("Database user")
-passwordn <- rstudioapi::askForPassword("Database password")
-
-
-fnames <- list.files(path = data_path, pattern = "rivers_xy.rds")
+# add basin, sub-basin, interbasin, closed, region, 
+fnames <- list.files(path = data_path, pattern = "_xy.rds")
 
 for(i in fnames){
   st <- readRDS(paste0(data_path,"/",i))
   print(paste("read", i))
-  if(i == "na_rivers_xy_dist.rds"){
+  if(i == "na_xy.rds"){
     dem_select <- c("na_dem_15s_grid", "ca_dem_15s_grid")
   }
-  if(i == "af_rivers_xy_dist.rds"){
+  if(i == "af_xy.rds"){
     dem_select <- c("af_dem_15s_grid")
   }
-  if(i == "as_rivers_xy_dist.rds"){
+  if(i == "as_xy.rds"){
     dem_select <- c("as_dem_15s_grid", "eu_dem_15s_grid")
   }
-  if(i == "au_rivers_xy_dist.rds"){
+  if(i == "au_xy.rds"){
     dem_select <- c("au_dem_15s_grid", "as_dem_15s_grid")
   }
-  if(i == "eu_rivers_xy_dist.rds"){
+  if(i == "eu_xy.rds"){
     dem_select <- c("eu_dem_15s_grid", "as_dem_15s_grid")
   }
-  if(i == "sa_n_rivers_xy_dist.rds"){
+  if(i == "sa_n_xy.rds"){
     dem_select <- c("sa_dem_15s_grid", "ca_dem_15s_grid")
   }
-  if(i == "sa_s_rivers_xy_dist.rds"){
+  if(i == "sa_s_xy.rds"){
     dem_select <- c("sa_dem_15s_grid", "ca_dem_15s_grid")
   }
-  if(i == "si_rivers_xy_dist.rds"){
+  if(i == "si_xy.rds"){
     dem_select <- c("as_dem_15s_grid", "eu_dem_15s_grid")
   }
   
   for(dem_id in 1:length(dem_select)){
-    dsn <- paste0("PG:dbname='earth' host=localhost user=", usern," password=",passwordn," port=5432 schema='basin_dem' table='",dem_select[dem_id],"' mode=2")
+    dsn <- paste0("PG:dbname='earth' host=localhost user=", usern," password=",pn," port=5432 schema='basin_dem' table='",dem_select[dem_id],"' mode=2")
     rasterfile_dem <- readGDAL(dsn) # Get your file as SpatialGridDataFrame
     dem_raster <- raster(rasterfile_dem)
     if(dem_id == 1){
@@ -65,3 +60,4 @@ for(i in fnames){
   rm(sp_points)
   gc()
 }
+

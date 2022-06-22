@@ -3,9 +3,10 @@ source('code/source/libs.R')
 source('code/source/experiments/exp_05.R')
 
 
-regions <- c("af", "as", "na", "au", "eu", "sa_n", "sa_s")
+regions <- c("af", "as", "na", "au", "eu", "sa_n", "sa_s", "si")
 
-for(i in 2:length(regions)){
+for(i in 1:length(regions)){
+
   river_NCI <- readRDS(paste0(data_path, '/',regions[i],'_NCI_dist.rds'))
   
   river_NCI_sel <- subset(river_NCI, select = c(NCI_12, 

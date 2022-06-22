@@ -3,12 +3,11 @@ source('code/source/libs.R')
 source('code/source/experiments/exp_05.R')
 source('code/source/graphics.R')
 
-library(ggplot2)
 library(gtools)
 
 options(scipen = 20)
 
-regions <- c("af", "as", "na", "au", "eu", "sa_n", "sa_s")
+regions <- c("af", "as", "na", "au", "eu", "sa_n", "sa_s", "si")
 
 basin_atlas_feats <- readRDS("data/experiments/exp03/basin_atlas_feats.rds")
 basin_atlas_feats_qq <- readRDS("data/experiments/exp03/basin_atlas_feats_qq.rds")
@@ -39,7 +38,7 @@ to_plot <- to_plot[complete.cases(to_plot)]
 ggplot(to_plot, aes(x = NCI, col = value)) +
   geom_density() +
   facet_wrap(~variable) + 
-  xlim(-1.0, 0.5) +
+  xlim(-1.0, 1.0) +
   scale_color_manual(values = palette_RdBu(10)) +
   theme_light()
 
@@ -51,7 +50,7 @@ to_plot <- to_plot[complete.cases(to_plot)]
 ggplot(to_plot, aes(x = NCI, col = value)) +
   geom_density() +
   facet_wrap(~variable) + 
-  xlim(-1.0, 0.5) +
+  xlim(-1.0, 1.0) +
   scale_color_manual(values = palette_RdBu(10)) +
   theme_light()
 
@@ -104,11 +103,26 @@ con <- dbConnect(Postgres(), dbname = db_name, host = host_ip, port = port_n,
 basin_sel <- subset(basin, select = c(NCI, pfaf_id))
 basin_sel <- basin_sel[complete.cases(basin_sel)]
 
-#query_sel_boundaries <- paste0("SELECT pfaf_id, geom FROM basin_boundaries.basins_all_regions_4_11 WHERE pfaf_id IN (", as.character(c(basin_sel$pfaf_id)), ")")
+pfaf_paste <- paste(as.character(basin_sel$pfaf_id), collapse = "', '")
+query_sel_boundaries <- paste0("SELECT pfaf_id, geom FROM basin_boundaries.basins_all_regions_4_11 WHERE pfaf_id IN ( '", pfaf_paste, "')")
 
 boundaries <- st_read(con, query = query_sel_boundaries)
 
 
+data_to_plot <- merge(boundaries, basin_sel, by = "pfaf_id", all.x = TRUE)
+saveRDS(data_to_plot, paste0(results_path, '/global_map_NCI.rds'))
+
+data_to_plot_dt <- data.table(data_to_plot)
+
+data_to_plot_dt[, level := nchar(pfaf_id)]
+data_to_plot_dt[, NCI_cut := cut(NCI, breaks = c(seq(-1,1,0.2)))]
+
+ggplot(data_to_plot_dt[level < 9 & NCI < 1 & NCI > -1])+
+  geom_sf(aes(geometry = geometry, fill = NCI_cut), col = NA)+
+  #scale_color_manual(values = palette_RdBu(10)) +
+  scale_fill_manual(values = palette_RdBu(10)) +
+  theme_bw()
+ggsave("results/experiments/exp05/mapNCI_distance_greaterlevel9.png")
 
 # merge geom to basin_sel
 # plot

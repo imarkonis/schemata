@@ -6,7 +6,7 @@ source('code/source/geo_functions.R')
 source('code/source/experiments/exp_05.R')
 
 options(scipen = 20)
-regions <- c("af", "as", "na", "au", "eu", "sa_n", "sa_s")
+regions <- c("af", "as", "na", "au", "eu", "sa_n", "sa_s", "si")
 
 for(i in 1:length(regions)){
   river_NCI <- readRDS(paste0(data_path, '/',regions[i],'_NCI_dist.rds'))
@@ -56,7 +56,7 @@ for(i in 1:length(regions)){
   river_NCI_filter[, level_num := as.numeric(level_num), ]
   river_NCI_filter <- river_NCI_filter[ord_clas == lowest_ord_clas ]
   gc()
-  river_NCI_filter[, zend := min(z[which.min(next_down)]), .(pfaf_id)]
+  river_NCI_filter[, zend := min(z[which.min(dist_dn_km)]), .(pfaf_id)]
   # zbeg is where z where max(dist_up_km)
   river_NCI_filter[, zbeg := max(z[which.max(dist_dn_km)]), .(pfaf_id)]
   # l is max(dist_up_km)
