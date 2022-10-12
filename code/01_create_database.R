@@ -1,7 +1,6 @@
 source('code/source/libs.R')
 source('code/source/database.R')
 
-
 library(dplyr)
 library(dbplyr)
 
@@ -28,18 +27,20 @@ for(region_count in 1:regions_n){
   write_sf(region_all["pfaf_id"], con, Id(schema = db_schema, table = table_name))
 }
 #Validation plots
-
-single_pfaf_id <- 225190431120
+single_pfaf_id <- 22519043112
 string_length <- stringr::str_length(single_pfaf_id)
 
 upscale_pfaf_ids <- vector()
-for(i in string_length:3){
-  upscale_pfaf_ids[i - 2] <- substr(single_pfaf_id, start = 1, stop = i)
+for(i in string_length:4){
+  upscale_pfaf_ids[i - 3] <- substr(single_pfaf_id, start = 1, stop = i)
 }
+upscale_pfaf_ids <- paste("'", upscale_pfaf_ids, "'", sep = "", collapse = ", ")
 
-basin_all <- st_read(con, basin_tables_all)
-single_basin <- basin_tables_all %>% filter(pfaf_id %in% upscale_pfaf_ids)
+single_basin <- st_read(con, query = paste0("SELECT * FROM ", db_schema, ".basins_all_regions_4_11 
+                                         WHERE pfaf_id IN (", upscale_pfaf_ids, ")"))
+single_basin <- single_basin %>% 
+  arrange(as.numeric(pfaf_id))
 
 ggplot(single_basin) +
-  geom_sf(aes(fill = log(sub_area))) +
+  geom_sf(aes(fill = 8:1)) +
   theme_light()
