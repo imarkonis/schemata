@@ -5,21 +5,27 @@ source('code/source/geo_functions.R')
 library(sf)
 
 regions_n <- length(regions_all)
+dir.create(paste0(data_path, 'basin_feats'))
 
-for(region_count in 1:regions_n){
+for(region_count in 3){
   print(regions_all[region_count])
   
-  bas_borders <- st_read(con, query = paste0("SELECT * FROM basin_boundaries.", regions_all[region_count], "_all"))
+  bas_borders <- st_read(con, query = paste0("SELECT * FROM basin_boundaries.", 
+                                             regions_all[region_count], "_all"))
   
   basins_n <- length(bas_borders$pfaf_id)
   basins <- foreach(basin_count = 1:basins_n, .packages = c('data.table', 'sf'), 
                     .combine = 'rbind') %dopar% {
-                      basin <- st_make_valid(bas_borders[basin_count, ])
-                      basin_line <- st_cast(basin, "MULTILINESTRING")
+                      basin <- tryCatch(st_make_valid(bas_borders[basin_count, ]),
+                                        error = function(err) NA) 
+                      basin_line <- tryCatch(st_cast(basin, "MULTILINESTRING"),
+                                             error = function(err) NA)          
                       data.table(pfaf_id = basin$pfaf_id,
                                  level = nchar(basin$pfaf_id),
-                                 area = as.numeric(st_area(basin)),
-                                 perimeter = as.numeric(st_length(basin_line)))
+                                 area = tryCatch(as.numeric(st_area(basin)), 
+                                                 error = function(err) NA),
+                                 perimeter =  tryCatch(as.numeric(st_length(basin_line)),
+                                                       error = function(err) NA))
                     }
   basins <- unique(basins[complete.cases(basins)])
   basins[, gc := gc_coef(perimeter, area)]
