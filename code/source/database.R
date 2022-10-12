@@ -13,11 +13,11 @@ if(!dir.exists(data_path)) {dir.create(paste0('./data/database/'))}
 
 db_name <- 'earth'
 db_schema <- 'basin_boundaries'
-host_ip <- '127.0.0.1' 
+host_ip <- '10.152.183.146' 
 port_n <- '5432'
 
 con <- dbConnect(Postgres(), dbname = db_name, host = host_ip, port = port_n,        
-                 user = rstudioapi::askForPassword("Database user"),      
+                 user = "yannis",      
                  password = rstudioapi::askForPassword("Database password"))
 
 # Parallel computing
@@ -27,5 +27,5 @@ registerDoParallel(cores = cores_n - 4)
 
 # Constants
 
-regions_all <- list.dirs(basin_shp_path, full.names = FALSE)[-1]
+regions_all <- c('af', 'ar', 'as', 'au', 'eu', 'gr', 'na', 'sa', 'si')
 basin_levels <- 3:11 # Levels 1 and 2 correspond to continents/country borders/Level 12 is almost identical to level 11
