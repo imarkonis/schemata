@@ -4,7 +4,7 @@ regions_all <- list.dirs('./data/raw/hydrosheds/hydrobasins', full.names = FALSE
 # Paths
 
 results_path <- paste0('./results/experiments/', experiment, '/')
-data_path <- paste0('./data/experiments/', experiment, '/')
+data_path <- paste0('./data/database/')
 
 if(!dir.exists(results_path)) {dir.create(paste0('./results/experiments/', experiment))}
 if(!dir.exists(data_path)) {dir.create(paste0('./data/experiments/', experiment))}

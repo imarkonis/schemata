@@ -49,7 +49,7 @@ ggplot(to_plot[variable == 'prcp'], aes(x = fractal, col = value)) +
   scale_color_manual(values = palette_RdBu(10)) +
   theme_light()
 
-to_plot <- melt(basins_qq[, c(6, 7)], id.vars = 'fractal')
+to_plot <- melt(basins_qq[, c(4, 7)], id.vars = 'fractal')
 to_plot <- to_plot[complete.cases(to_plot)]
 ggplot(to_plot, aes(x = fractal, col = value)) +
   geom_density() +
@@ -57,7 +57,7 @@ ggplot(to_plot, aes(x = fractal, col = value)) +
   scale_color_manual(values = palette_RdBu(16)) +
   theme_light()
 
-to_plot <- melt(basins_qq[, c(6, 8)], id.vars = 'fractal')
+to_plot <- melt(basins_qq[, c(4, 8)], id.vars = 'fractal')
 to_plot <- to_plot[complete.cases(to_plot)]
 ggplot(to_plot, aes(x = fractal, col = value)) +
   geom_density() +
