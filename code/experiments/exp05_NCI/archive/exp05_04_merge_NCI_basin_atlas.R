@@ -9,7 +9,7 @@ source('code/source/experiments/exp_05.R')
 library(ggplot2)
 options(scipen = 20)
 
-regions <- c("af", "as", "na", "au", "eu", "sa_n", "sa_s")
+regions <- c("af", "as", "na", "au", "eu", "sa_n", "sa_s", "si")
 
 basin_atlas_feats <- readRDS("data/experiments/exp03/basin_atlas_feats.rds")
 basin_atlas_feats_qq <- readRDS("data/experiments/exp03/basin_atlas_feats_qq.rds")
