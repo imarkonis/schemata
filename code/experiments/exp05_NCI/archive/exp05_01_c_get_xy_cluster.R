@@ -4,9 +4,10 @@ library(parallel)
 options(scipen = 15)
 regions <- c("af", "as", "na", "au", "eu", "sa_n", "sa_s", "si")
 
-
-par_regions <- function(region){
-  river_level <- readRDS(paste0(data_path, '/',region,'_levels.rds'))
+# add basin, sub-basin, interbasin, closed, region, 
+for(i in 1:length(regions)){
+  print(regions[i])
+  river_level <- readRDS(paste0(data_path, '/',regions[i],'_levels.rds'))
   river_level <- as.data.table(river_level)
   crs_region <- st_crs(river_level$geom[1])
   river_level[, pt_count:= nrow(st_coordinates(geom)), pfaf_id_level]
@@ -35,7 +36,20 @@ par_regions <- function(region){
   }
   # distance between points
   coords_dt$id <- 1:nrow(coords_dt)
-  coords_dt[, distance := st_distance(st_sfc(st_point(x= c(.SD$X,.SD$Y)), crs = crs_use),st_sfc(st_point(x= c(.SD$X2,.SD$Y2)), crs = crs_use), by_element = T), id]
+  dt_small <- subset(coords_dt, select = c(X, Y,X2, Y2, id))
+  a <- Sys.time()
+  cores_n <- detectCores()-20
+  cluster <- makeCluster(cores_n, type = "FORK")
+  clusterEvalQ(cluster, library("data.table"))
+  clusterExport(cluster, "dt_small", envir = .GlobalEnv)
+  parLapply(cluster, coords_dt$id, function(x, crs_use = crs_in){
+  dt_small[id == x, distance:= sf::st_distance(sf::st_sfc(sf::st_point(x= c(.SD$X,.SD$Y)), crs = crs_in),sf::st_sfc(sf::st_point(x= c(.SD$X2,.SD$Y2)), crs = crs_in), by_element = T),]
+  dt_small[, distance:= sf::st_distance(sf::st_sfc(sf::st_point(x= c(.SD$X,.SD$Y)), crs = crs_in),sf::st_sfc(sf::st_point(x= c(.SD$X2,.SD$Y2)), crs = crs_in), by_element = T),id]
+  }
+  )
+  stopCluster(cluster)
+  print(difftime(Sys.time(),a))
+  coords_dt$distance <- dt_small$distance
   coords_dt[, cum_dist := cumsum(distance), L1]
   coords_dt[, cum_dist_v2 := rev(cum_dist) , L1]  
   print("got coords")
@@ -50,16 +64,9 @@ par_regions <- function(region){
   river_merged[, pt_count_new := NULL]
   river_merged[, geometry := NULL]
   
-  saveRDS(river_merged, paste0(data_path, "/",region,"_xy.rds"))
+  saveRDS(river_merged, paste0(data_path, "/",regions[i],"_xy.rds"))
   
   gc()
   
-  
 }
 
-
-mclapply(coords_dt$id, 
-  par_fun, 
-  mc.cores = 40,
-  mc.cleanup = TRUE
-)

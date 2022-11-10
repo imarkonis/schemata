@@ -1,13 +1,12 @@
 source('code/source/libs.R')
-source('code/source/database.R')
 source('code/source/experiments/exp_05.R')
+source('code/source/database_dem.R')
+
 library('rgdal')
 options(scipen = 15)
 regions <- c("af", "as", "na", "au", "eu", "sa_n", "sa_s", "si")
 
-# add basin, sub-basin, interbasin, closed, region, 
 fnames <- list.files(path = data_path, pattern = "_xy.rds")
-
 for(i in fnames){
   st <- readRDS(paste0(data_path,"/",i))
   print(paste("read", i))
@@ -37,7 +36,8 @@ for(i in fnames){
   }
   
   for(dem_id in 1:length(dem_select)){
-    dsn <- paste0("PG:dbname='earth' host=localhost user=", usern," password=",pn," port=5432 schema='basin_dem' table='",dem_select[dem_id],"' mode=2")
+    dsn <- paste0("PG:dbname='earth' host='192.168.64.4' user=", username," password=",pn," port=5432 schema='basin_dem' table='",dem_select[dem_id],"' mode=2")
+#    dsn <- paste0("PG:dbname='earth' host=localhost user=", usern," password=",pn," port=5432 schema='basin_dem' table='",dem_select[dem_id],"' mode=2")
     rasterfile_dem <- readGDAL(dsn) # Get your file as SpatialGridDataFrame
     dem_raster <- raster(rasterfile_dem)
     if(dem_id == 1){
