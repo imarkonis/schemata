@@ -42,15 +42,15 @@ ggplot(to_plot[variable == 'prcp'], aes(x = fractal, col = prcp_quant)) +
   scale_color_manual(values = palette_RdBu(10)) +
   theme_light()
 
-#We can also use GRanger as an alternative:
+#We can also use Granger as an alternative:
 ggplot(to_plot[variable == 'prcp'], aes(x = gc, col = prcp_quant)) +
   geom_density() +
   xlim(1, 2.5) +
   scale_color_manual(values = palette_RdBu(10)) +
   theme_light()
 
-
-#To see if the area of the basin plays a role we further split the catchments at levels with areas of 100, 1000, and 10000 km2 
+#To see if the area of the basin plays a role we further split the catchments at levels with median areas of 135, 1530, and 17400 km2 
+basins[, median(area), level]
 basin_main_levels <- c(5, 7, 11)
 
 ggplot(to_plot[variable == 'prcp' & level %in% basin_main_levels], aes(x = fractal, col = prcp_quant)) +
@@ -68,6 +68,7 @@ ggplot(to_plot[variable == 'prcp' & level %in% basin_main_levels], aes(x = fract
   facet_wrap(~level) + 
   theme_light()
 
+#As we see the difference in behaviour related to the scale, in the following scripts we will investigate some additional hypotheses.
 
 #############################
 
