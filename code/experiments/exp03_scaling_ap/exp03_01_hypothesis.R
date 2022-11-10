@@ -29,9 +29,10 @@ plot(basin_120)
 #To verify the research hypothesis, we decompose precipitation in 10 quantiles and plot their empirical prob. density functions
 
 basins[, prcp_quant := ordered(quantcut(prcp, 10), labels = seq(0.1, 1, 0.1)), by = 'level']
+basins[, area_quant := ordered(quantcut(area, 10), labels = seq(0.1, 1, 0.1))]
 
 to_plot <- melt(basins[coast == 0, c(-1:-2)], id.vars = c('fractal', 'gc', 'vegetation', 'bas_type', 'climate', 'level',
-                                                          'lithology', 'prcp_quant', 'elevation'))
+                                                          'lithology', 'prcp_quant', 'elevation', 'area_quant'))
 to_plot <- to_plot[complete.cases(to_plot)]
 
 ggplot(to_plot[variable == 'prcp'], aes(x = fractal, col = prcp_quant)) +
@@ -48,6 +49,7 @@ ggplot(to_plot[variable == 'prcp'], aes(x = gc, col = prcp_quant)) +
   theme_light()
 
 #To see if the area of the basin plays a role we further split the catchments at levels with median areas of 135, 1530, and 17400 km2 
+#Then we also check all the area quantiles 
 basins[, median(area), level]
 basin_main_levels <- c(5, 7, 11)
 
@@ -58,12 +60,63 @@ ggplot(to_plot[variable == 'prcp' & level %in% basin_main_levels], aes(x = fract
   facet_wrap(~level) + 
   theme_light()
 
+ggplot(to_plot[variable == 'prcp'], aes(x = fractal, col = prcp_quant)) +
+  geom_density() +
+  xlim(1.14, 1.25) +
+  scale_color_manual(values = palette_RdBu(10)) +
+  facet_wrap(~area_quant) + 
+  theme_light()
+
+ggplot(to_plot[variable == 'prcp'], aes(x = fractal, col = area_quant)) +
+  geom_density() +
+  xlim(1.14, 1.25) +
+  scale_color_manual(values = palette_RdBu(10)) +
+  facet_wrap(~prcp_quant) + 
+  theme_light()
+
+
+
 #The main alternative hypothesis is that lithology relates to basin shape. See: https://agupubs.onlinelibrary.wiley.com/doi/10.1029/2012GC004370
 ggplot(to_plot[variable == 'prcp' & level %in% basin_main_levels], aes(x = fractal, col = lithology)) +
   geom_density() +
   xlim(1.14, 1.25) +
   scale_color_manual(values = palette_RdBu(15)) +
   facet_wrap(~level) + 
+  theme_light()
+
+ggplot(to_plot[variable == 'prcp' & lithology %in% c('ig', 'mt', 'wb', 'va', 'pa', 'su') ], aes(x = fractal, col = area_quant)) +
+  geom_density() +
+  xlim(1.14, 1.25) +
+  scale_color_manual(values = palette_RdBu(10)) +
+  facet_wrap(~lithology) + 
+  theme_light()
+
+ggplot(to_plot[variable == 'prcp'], aes(x = fractal, col = prcp_quant)) +
+  geom_density() +
+  xlim(1.14, 1.25) +
+  scale_color_manual(values = palette_RdBu(10)) +
+  facet_wrap(~lithology, scales = 'free') + 
+  theme_light()
+
+ggplot(to_plot[area_quant == 0.2  & variable == 'prcp'], aes(x = fractal, col = prcp_quant)) +
+  geom_density() +
+  xlim(1.14, 1.25) +
+  scale_color_manual(values = palette_RdBu(10)) +
+  facet_wrap(~lithology, scales = 'free') + 
+  theme_light()
+
+ggplot(to_plot[area_quant == 0.9  & variable == 'prcp'], aes(x = fractal, col = prcp_quant)) +
+  geom_density() +
+  xlim(1.14, 1.25) +
+  scale_color_manual(values = palette_RdBu(10)) +
+  facet_wrap(~lithology, scales = 'free') + 
+  theme_light()
+
+ggplot(to_plot[lithology == 'vb' & variable == 'prcp'], aes(x = fractal, col = prcp_quant)) +
+  geom_density() +
+  xlim(1.14, 1.25) +
+  scale_color_manual(values = palette_RdBu(10)) +
+  facet_wrap(~area_quant) + 
   theme_light()
 
 #As we see the difference in behaviour related to the scale, in the following scripts we will investigate some additional hypotheses.
