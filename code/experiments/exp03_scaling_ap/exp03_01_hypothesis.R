@@ -8,14 +8,12 @@ library(gtools)
 basins <- readRDS(paste0(data_path, 'basin_atlas_feats.rds'))
 basins_qq <- readRDS(paste0(data_path, 'basin_atlas_feats_qq.rds'))
 
-
 #Assumptions:
 # 1. Fractal dimension describes the basin shape. To test this we show how a fractal dim of 1.15 compares to 1.18?
 
 con <- dbConnect(Postgres(), dbname = db_name, host = host_ip, port = port_n,        
                  user = "yannis",      
                  password = rstudioapi::askForPassword("Database password"))
-
 
 id_basin_117 <- basins[fractal > 1.14 & fractal < 1.15 & level == 7 & coast == 0 & bas_type == "sub-basin", pfaf_id][200]
 id_basin_120 <- basins[fractal > 1.18 & fractal < 1.19 & level == 7 & coast == 0 & bas_type == "sub-basin", pfaf_id][200]
