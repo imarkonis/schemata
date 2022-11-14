@@ -30,19 +30,20 @@ plot(basin_120)
 
 basins[, prcp_quant := ordered(quantcut(prcp, 10), labels = seq(0.1, 1, 0.1)), by = 'level']
 basins[, area_quant := ordered(quantcut(area, 10), labels = seq(0.1, 1, 0.1))]
+basins[, elev_quant := ordered(quantcut(elevation, 5), labels = seq(0.2, 1, 0.2))]
 
 to_plot <- melt(basins[coast == 0, c(-1:-2)], id.vars = c('fractal', 'gc', 'vegetation', 'bas_type', 'climate', 'level',
-                                                          'lithology', 'prcp_quant', 'elevation', 'area_quant'))
+                                                          'lithology', 'prcp_quant', 'elevation', 'elev_quant', 'area_quant'))
 to_plot <- to_plot[complete.cases(to_plot)]
 
-ggplot(to_plot[variable == 'prcp'], aes(x = fractal, col = prcp_quant)) +
+ggplot(to_plot[variable == 'prcp' & level == 11], aes(x = fractal, col = prcp_quant)) +
   geom_density() +
   xlim(1.14, 1.3) +
   scale_color_manual(values = palette_RdBu(10)) +
   theme_light()
 
 #We can also use Granger as an alternative:
-ggplot(to_plot[variable == 'prcp'], aes(x = gc, col = prcp_quant)) +
+ggplot(to_plot[variable == 'prcp' & level == 11], aes(x = gc, col = prcp_quant)) +
   geom_density() +
   xlim(1, 2.5) +
   scale_color_manual(values = palette_RdBu(10)) +
@@ -60,21 +61,26 @@ ggplot(to_plot[variable == 'prcp' & level %in% basin_main_levels], aes(x = fract
   facet_wrap(~level) + 
   theme_light()
 
-ggplot(to_plot[variable == 'prcp'], aes(x = fractal, col = prcp_quant)) +
+ggplot(to_plot[variable == 'prcp'& level == 11], aes(x = fractal, col = prcp_quant)) +
   geom_density() +
   xlim(1.14, 1.25) +
   scale_color_manual(values = palette_RdBu(10)) +
   facet_wrap(~area_quant) + 
   theme_light()
 
+ggplot(to_plot[variable == 'prcp' & level == 9], aes(x = fractal, col = prcp_quant)) +
+  geom_density() +
+  xlim(1.14, 1.25) +
+  scale_color_manual(values = palette_RdBu(10)) +
+  facet_wrap(~elev_quant) + 
+  theme_light()
+
 ggplot(to_plot[variable == 'prcp'], aes(x = fractal, col = area_quant)) +
   geom_density() +
   xlim(1.14, 1.25) +
   scale_color_manual(values = palette_RdBu(10)) +
-  facet_wrap(~prcp_quant) + 
+  facet_wrap(~elev_quant) + 
   theme_light()
-
-
 
 #The main alternative hypothesis is that lithology relates to basin shape. See: https://agupubs.onlinelibrary.wiley.com/doi/10.1029/2012GC004370
 ggplot(to_plot[variable == 'prcp' & level %in% basin_main_levels], aes(x = fractal, col = lithology)) +
@@ -84,11 +90,11 @@ ggplot(to_plot[variable == 'prcp' & level %in% basin_main_levels], aes(x = fract
   facet_wrap(~level) + 
   theme_light()
 
-ggplot(to_plot[variable == 'prcp' & lithology %in% c('ig', 'mt', 'wb', 'va', 'pa', 'su') ], aes(x = fractal, col = area_quant)) +
+ggplot(to_plot[variable == 'prcp'], aes(x = fractal, col = prcp_quant)) +
   geom_density() +
   xlim(1.14, 1.25) +
   scale_color_manual(values = palette_RdBu(10)) +
-  facet_wrap(~lithology) + 
+  facet_wrap(~lithology, scales = 'free') + 
   theme_light()
 
 ggplot(to_plot[variable == 'prcp'], aes(x = fractal, col = prcp_quant)) +
