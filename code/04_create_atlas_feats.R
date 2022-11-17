@@ -67,6 +67,12 @@ cols <- c('elevation', 'slope', 'stream_grad',
           'prcp', 'aridity', 'clay_pc', 'silt_pc', 
           'sand_pc', 'erosion')
 
+basins[, area_class := ordered(cut(area, breaks = c(0, 100 * 10^6, 10^9, 10^10, 10^13)), 
+                                 labels = c('<100', '1000', '10000', '>10000'))]
+basin_atlas_feats[, elev_quant := ordered(quantcut(elevation, 5), labels = seq(0.2, 1, 0.2))]
+basin_atlas_feats[, fractal_quant := ordered(quantcut(fractal, 10), labels = seq(0.1, 1, 0.1))]
+basin_atlas_feats[, prcp_quant := ordered(quantcut(prcp, 5), labels = seq(0.2, 1, 0.2))]
+
 basin_atlas_quant <- data.table()
 for(level_count in basin_levels){
   basin_atlas_temp <- basin_atlas_feats[level == level_count, 
@@ -80,6 +86,8 @@ for(level_count in basin_levels){
 
 basin_atlas_quant_feats <- merge(basin_atlas_feats[, c('pfaf_id', 'hybas_id', 'level', 'fractal', 'gc'), ], 
                                   basin_atlas_quant, by = c('pfaf_id'))
+
+
 
 saveRDS(basin_atlas_quant_feats, paste0(data_path, 'basin_atlas_feats_qq.rds'))
 saveRDS(basin_atlas_feats, paste0(data_path, 'basin_atlas_feats.rds'))

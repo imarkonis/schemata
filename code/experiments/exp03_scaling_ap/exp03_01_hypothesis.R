@@ -6,12 +6,6 @@ library(gtools)
 #Research hypothesis: Precipitation affects the basin shape
 
 basins <- readRDS(paste0(data_path, 'basin_atlas_feats.rds'))
-basins_qq <- readRDS(paste0(data_path, 'basin_atlas_feats_qq.rds'))
-
-basins[, prcp_quant := ordered(quantcut(prcp, 10), labels = seq(0.1, 1, 0.1)), by = 'level']
-basins[, area_quant := ordered(quantcut(area, 10), labels = seq(0.1, 1, 0.1))]
-basins[, elev_quant := ordered(quantcut(elevation, 5), labels = seq(0.2, 1, 0.2))]
-basins[, fractal_quant := ordered(quantcut(fractal, 10), labels = seq(0.1, 1, 0.1))]
 
 #Assumptions:
 # 1. Fractal dimension describes the basin shape. To test this we show how a fractal dim of 1.15 compares to 1.18?
@@ -20,8 +14,8 @@ con <- dbConnect(Postgres(), dbname = db_name, host = host_ip, port = port_n,
                  user = "yannis",      
                  password = rstudioapi::askForPassword("Database password"))
 
-id_basin_117 <- basins[fractal > 1.14 & fractal < 1.15 & level == 7 & coast == 0 & bas_type == "sub-basin", pfaf_id][200]
-id_basin_120 <- basins[fractal > 1.18 & fractal < 1.19 & level == 7 & coast == 0 & bas_type == "sub-basin", pfaf_id][200]
+id_basin_117 <- basins[fractal > 1.14 & fractal < 1.15 & level == 7 & coast == 0 & bas_type == "sub-basin", pfaf_id][200] #round
+id_basin_120 <- basins[fractal > 1.18 & fractal < 1.19 & level == 7 & coast == 0 & bas_type == "sub-basin", pfaf_id][200] #long
 
 basin_117  <- st_read(con, query = paste0("SELECT * FROM ", db_schema, ".basins_all_regions_4_11 
                                          WHERE pfaf_id = '", id_basin_117, "'"))
@@ -31,7 +25,7 @@ plot(basin_117)
 plot(basin_120)
 #Note that the number of polygons (esp. in higher lvls) affects the estimation of fractal dimension
 
-#We also check the relationship between fractal dimension and concavity index for 300k catchments
+#We also check the relationship between fractal dimension and concavity index for 300k catchments -> Failed!
 
 river_NCI <- readRDS("~/shared/projects/schemata/data/exp05/NCI_global.rds")
 river_NCI_mean_pfaf <- subset(river_NCI, select = c("pfaf_id_level", "NCI"))
@@ -58,17 +52,17 @@ NCI_atlas[NCI > 0, median(prcp, na.rm = T)]
 #To verify the research hypothesis, we decompose precipitation in 10 quantiles and plot their empirical prob. density functions
 
 to_plot <- melt(basins[coast == 0, c(-1:-2)], id.vars = c('fractal', 'gc', 'vegetation', 'bas_type', 'climate', 'level',
-                                                          'lithology', 'prcp_quant', 'elevation', 'elev_quant', 'area_quant'))
+                                                          'lithology', 'prcp_quant', 'elevation', 'elev_quant', 'area_class'))
 to_plot <- to_plot[complete.cases(to_plot)]
 
-ggplot(to_plot[variable == 'prcp' & level == 11], aes(x = fractal, col = prcp_quant)) +
+ggplot(to_plot[variable == 'prcp'], aes(x = fractal, col = prcp_quant)) +
   geom_density() +
   xlim(1.14, 1.3) +
-  scale_color_manual(values = palette_RdBu(10)) +
+  scale_color_manual(values = palette_RdBu(5)) +
   theme_light()
 
 #We can also use Granger as an alternative:
-ggplot(to_plot[variable == 'prcp' & level == 11], aes(x = gc, col = prcp_quant)) +
+ggplot(to_plot[variable == 'prcp'], aes(x = gc, col = prcp_quant)) +
   geom_density() +
   xlim(1, 2.5) +
   scale_color_manual(values = palette_RdBu(10)) +
@@ -82,41 +76,42 @@ basin_main_levels <- c(5, 7, 11)
 ggplot(to_plot[variable == 'prcp' & level %in% basin_main_levels], aes(x = fractal, col = prcp_quant)) +
   geom_density() +
   xlim(1.14, 1.25) +
-  scale_color_manual(values = palette_RdBu(10)) +
+  scale_color_manual(values = palette_RdBu(5)) +
   facet_wrap(~level) + 
   theme_light()
 
-ggplot(to_plot[variable == 'prcp'& level == 11], aes(x = fractal, col = prcp_quant)) +
+ggplot(to_plot[variable == 'prcp'], aes(x = fractal, col = prcp_quant)) +
   geom_density() +
   xlim(1.14, 1.25) +
-  scale_color_manual(values = palette_RdBu(10)) +
-  facet_wrap(~area_quant) + 
+  scale_color_manual(values = palette_RdBu(5)) +
+  facet_wrap(~area_class) + 
   theme_light()
 
-ggplot(to_plot[variable == 'prcp' & level == 9], aes(x = fractal, col = prcp_quant)) +
-  geom_density() +
+ggplot(to_plot[variable == 'prcp'], aes(x = fractal, fill = prcp_quant)) +
+  geom_boxplot(outlier.shape = NA) +
+  coord_flip() +
   xlim(1.14, 1.25) +
-  scale_color_manual(values = palette_RdBu(10)) +
-  facet_wrap(~elev_quant) + 
+  scale_fill_manual(values = palette_RdBu(5)) +
+  facet_wrap(~area_class) + 
   theme_light()
 
-ggplot(to_plot[variable == 'prcp'], aes(x = fractal, col = area_quant)) +
+ggplot(to_plot[variable == 'prcp' & level %in% c(4, 5, 6, 7, 9, 11)], aes(x = fractal, col = prcp_quant)) + #to reduce basin overlap
   geom_density() +
   xlim(1.14, 1.25) +
-  scale_color_manual(values = palette_RdBu(10)) +
-  facet_wrap(~elev_quant) + 
+  scale_color_manual(values = palette_RdBu(5)) +
+  facet_wrap(~area_class) + 
   theme_light()
 
 #The main alternative hypothesis is that lithology relates to basin shape. See: https://agupubs.onlinelibrary.wiley.com/doi/10.1029/2012GC004370
 ggplot(to_plot[variable == 'prcp' & level %in% basin_main_levels], aes(x = fractal, col = lithology)) +
   geom_density() +
   xlim(1.14, 1.25) +
-  scale_color_manual(values = palette_RdBu(15)) +
-  facet_wrap(~level) + 
+  facet_wrap(~area_class, scales = 'free') + 
   theme_light()
 
-ggplot(to_plot[variable == 'prcp'], aes(x = fractal, col = prcp_quant)) +
-  geom_density() +
+ggplot(to_plot[variable == 'prcp'], aes(x = fractal, fill = prcp_quant)) +
+  geom_boxplot() +
+  coord_flip() +
   xlim(1.14, 1.25) +
   scale_color_manual(values = palette_RdBu(10)) +
   facet_wrap(~lithology, scales = 'free') + 
