@@ -8,6 +8,11 @@ library(gtools)
 basins <- readRDS(paste0(data_path, 'basin_atlas_feats.rds'))
 basins_qq <- readRDS(paste0(data_path, 'basin_atlas_feats_qq.rds'))
 
+basins[, prcp_quant := ordered(quantcut(prcp, 10), labels = seq(0.1, 1, 0.1)), by = 'level']
+basins[, area_quant := ordered(quantcut(area, 10), labels = seq(0.1, 1, 0.1))]
+basins[, elev_quant := ordered(quantcut(elevation, 5), labels = seq(0.2, 1, 0.2))]
+basins[, fractal_quant := ordered(quantcut(fractal, 10), labels = seq(0.1, 1, 0.1))]
+
 #Assumptions:
 # 1. Fractal dimension describes the basin shape. To test this we show how a fractal dim of 1.15 compares to 1.18?
 
@@ -26,11 +31,31 @@ plot(basin_117)
 plot(basin_120)
 #Note that the number of polygons (esp. in higher lvls) affects the estimation of fractal dimension
 
-#To verify the research hypothesis, we decompose precipitation in 10 quantiles and plot their empirical prob. density functions
+#We also check the relationship between fractal dimension and concavity index for 300k catchments
 
-basins[, prcp_quant := ordered(quantcut(prcp, 10), labels = seq(0.1, 1, 0.1)), by = 'level']
-basins[, area_quant := ordered(quantcut(area, 10), labels = seq(0.1, 1, 0.1))]
-basins[, elev_quant := ordered(quantcut(elevation, 5), labels = seq(0.2, 1, 0.2))]
+river_NCI <- readRDS("~/shared/projects/schemata/data/exp05/NCI_global.rds")
+river_NCI_mean_pfaf <- subset(river_NCI, select = c("pfaf_id_level", "NCI"))
+river_NCI_mean_pfaf <- unique(river_NCI_mean_pfaf)
+
+river_NCI_mean_pfaf[, pfaf_id_level:= as.character(pfaf_id_level)]
+river_NCI_mean_pfaf[, pfaf_id_level:= as.character(pfaf_id_level)]
+
+NCI_atlas <- merge(basins, river_NCI_mean_pfaf, by.x = "pfaf_id", by.y = "pfaf_id_level") 
+
+ggplot(NCI_atlas, aes(x = NCI, y = fractal)) +
+  geom_point() +
+  xlim(-1.0, 0.5) +
+  scale_color_manual(values = palette_RdBu(10)) +
+  geom_vline(xintercept = 0, col = "gray40")+
+  theme_light()
+
+NCI_atlas[fractal_quant < 0.2, median(NCI, na.rm = T)]
+NCI_atlas[fractal_quant > 0.9, median(NCI, na.rm = T)]
+
+NCI_atlas[NCI < -0.41, median(prcp, na.rm = T)]
+NCI_atlas[NCI > 0, median(prcp, na.rm = T)]
+
+#To verify the research hypothesis, we decompose precipitation in 10 quantiles and plot their empirical prob. density functions
 
 to_plot <- melt(basins[coast == 0, c(-1:-2)], id.vars = c('fractal', 'gc', 'vegetation', 'bas_type', 'climate', 'level',
                                                           'lithology', 'prcp_quant', 'elevation', 'elev_quant', 'area_quant'))

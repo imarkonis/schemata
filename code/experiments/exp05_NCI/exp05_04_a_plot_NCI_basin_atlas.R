@@ -13,7 +13,9 @@ basin_atlas_feats_qq <- readRDS("~/shared/projects/schemata/data/basin_atlas_fea
 basin_atlas_feats[, pfaf_id:= as.numeric(pfaf_id)]
 basin_atlas_feats_qq[, pfaf_id:= as.numeric(pfaf_id)]
 
+river_NCI <- readRDS("~/shared/projects/schemata/data/exp05/NCI_global.rds")
 river_NCI <- readRDS(paste0(data_path, "/NCI_global.rds"))
+
 river_NCI_mean_pfaf <- subset(river_NCI, select = c("pfaf_id_level", "NCI"))
 river_NCI_mean_pfaf <- unique(river_NCI_mean_pfaf)
 
